@@ -11,15 +11,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-@Autonomous(name = "blue_obs", group = "Autonomous")
+@Autonomous(name = "red_ob", group = "Autonomous")
 public class redpark extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-24, 70, Math.toRadians(-90));
+        Pose2d initialPose = new Pose2d(24, -60, Math.toRadians(-90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         TrajectoryActionBuilder p1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(-60,60));
+                .strafeTo(new Vector2d(60,-60));
 
         telemetry.update();
         waitForStart();
