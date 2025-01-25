@@ -75,6 +75,8 @@ public class  robot {
         notMyopMode = opmode;
     }
 
+
+
     public double close_pos = 0.69;
     public double open_pos = 0.10;
 
