@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.TrajectoryActionFactory;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -13,6 +14,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.opencv.core.Mat;
 
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -132,31 +134,31 @@ public class TestAuto extends LinearOpMode {
 
         // vision here that outputs position
 
-        TrajectoryActionBuilder deafalut = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder p1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(0,-40))
                 .setTangent(-Math.PI/2)
                 .lineToY(-30);
-        TrajectoryActionBuilder p2 = deafalut.endTrajectory().fresh()
+        TrajectoryActionBuilder p2 = p1.endTrajectory().fresh()
                 .lineToY(-40)
                 .setTangent(Math.PI)
-                .lineToX(48)
+                .lineToX(48);
+        TrajectoryActionBuilder p3 = p2.endTrajectory().fresh()
                 .setTangent(Math.PI/2)
                 .lineToY(-30);
-        TrajectoryActionBuilder p3 = p2.endTrajectory().fresh()
+        TrajectoryActionBuilder p4 =p3.endTrajectory().fresh()
                 .lineToY(-60);
-        TrajectoryActionBuilder p4 = p3.endTrajectory().fresh()
+        TrajectoryActionBuilder p5 = p4.endTrajectory().fresh()
                 .lineToY(-40)
                 .waitSeconds(1)
                 .lineToY(-60);
-        TrajectoryActionBuilder p5 =p4.endTrajectory().fresh()
-                .strafeTo(new Vector2d(0,-40))
+        TrajectoryActionBuilder p6 = p5.endTrajectory().fresh()
+                .strafeTo(new Vector2d(0, -40))
                 .setTangent(Math.PI/2)
-                .lineToY(-30)
+                .lineToY(-30);
+        TrajectoryActionBuilder p7 = p6.endTrajectory().fresh()
                 .lineToY(-40)
                 .strafeTo(new Vector2d(60,-60));
-        Action trajectoryActionCloseOut = deafalut.endTrajectory().fresh()
-                .strafeTo(new Vector2d(48, 12))
-                .build();
+
 
         // actions that need to happen on init; for instance, a claw tightening.
         Actions.runBlocking(claw.closeClaw());
@@ -168,15 +170,24 @@ public class TestAuto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        Action trajectoryActionChosen = deafalut.build();
+        Action a1 = p1.build();
+        Action a2 = p2.build();
+        Action a3 = p3.build();
+        Action a4 = p4.build();
+        Action a5 = p5.build();
+        Action a6 = p6.build();
+        Action a7 = p7.build();
 
         Actions.runBlocking(
                 new SequentialAction(
-                        trajectoryActionChosen,
-//                        lift.liftUp(),
-//                        claw.openClaw(),
-//                        lift.liftDown(),
-                        trajectoryActionCloseOut
+                    a1,
+                    claw.openClaw(),
+                    a2,
+                    a3,
+                    a4,
+                    a5,
+                    a6,
+                    a7
                 )
         );
     }
