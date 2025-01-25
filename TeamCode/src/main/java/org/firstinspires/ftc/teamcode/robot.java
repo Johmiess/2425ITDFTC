@@ -100,14 +100,14 @@ public class  robot {
         // divide by 3.3 (the max voltage) to get a value between 0 and 1
 
 
-        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);https://github.com/Johmiess/2425ITDFTC
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 // get the voltage of our analog line
 // divide by 3.3 (the max voltage) to get a value between 0 and 1
 // multiply by 360 to convert it to 0 to 360 degrees
 
 //        claw = myOpMode.hardwareMap.get(ServoImplEx.class, "claw");
-//        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
+        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
 
 //        claw.setPosition(0);
 
@@ -136,7 +136,7 @@ public class  robot {
     }
 
 
-
+/*
     public void workingPIDup(double target){
         ElapsedTime timer = new ElapsedTime();
             ElapsedTime oneSec = new ElapsedTime();
@@ -149,7 +149,7 @@ public class  robot {
                 //lift.setPower(output);
                 LiftUtil.lastError = error;
         }
-
+*/
 
 
 //    public void setPower(double s1, double s2, double s3, double s4) {

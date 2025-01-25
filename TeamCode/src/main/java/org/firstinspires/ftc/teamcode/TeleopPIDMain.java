@@ -53,13 +53,13 @@ public class TeleopPIDMain extends LinearOpMode {
                 robo.Vert(0);
 
             }
-//            if (gamepad1.right_trigger > 0.1) {
-//                robo.intake(0.5);
-//            } else if (gamepad1.right_trigger == 0) {
-//                robo.intake(-0.5);
-//            } else {
-//                robo.intake(0);
-//            }
+            if (gamepad1.right_trigger > 0.1) {
+                robo.intake(0.5);
+            } else if (gamepad1.right_trigger == 0) {
+                robo.intake(-0.5);
+            } else {
+                robo.intake(0);
+            }
 //            if(gamepad2.x){
 //                robo.arm(.9, .3);
 //            } else if(gamepad2.b){
