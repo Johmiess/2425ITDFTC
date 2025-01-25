@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * This file works in conjunction with the External Hardware Class sample called: ConceptExternalHardwareClass.java
@@ -67,7 +68,6 @@ public class  robot {
     public CRServoImplEx rightAxon, leftAxon;
 
     public AnalogInput leftArm, rightArm;
-    public double error;
     public  double output;
     public double currentPos;
     public robot(LinearOpMode opmode) {
@@ -143,18 +143,43 @@ public class  robot {
 
 
 
-//    public void workingPIDup(double target){
-//        ElapsedTime timer = new ElapsedTime();
-//        ElapsedTime oneSec = new ElapsedTime();
-//        //currentPos = (lift.getCurrentPosition());
-//        error = target - currentPos;
-//        LiftUtil.integralSum += error;
-//        double derivative = (error - LiftUtil.lastError) / timer.seconds();
-//        output = (LiftUtil.LIFTP * error) + (LiftUtil.LIFTI * LiftUtil.integralSum) + (LiftUtil.LIFTD * derivative) + (LiftUtil.LIFTA);
-//        output = (LiftUtil.LIFTP * error) + (LiftUtil.LIFTI * LiftUtil.integralSum) + (LiftUtil.LIFTA);
-//        //lift.setPower(output);
-//        LiftUtil.lastError = error;
-//    }
+
+    public void vertSlidesPIDup(double target){
+        ElapsedTime timer = new ElapsedTime();
+        ElapsedTime oneSec = new ElapsedTime();
+        //currentPos = (lift.getCurrentPosition());
+        LiftUtil.vertSlidesError = target - currentPos;
+        LiftUtil.vertSlideintegralSum += LiftUtil.vertSlidesError;
+        double derivative = (LiftUtil.vertSlidesError - LiftUtil.VertSlidesLastError) / timer.seconds();
+        output = (LiftUtil.vertSlidesUpP * LiftUtil.vertSlidesError) + (LiftUtil.vertSlidesUpI * LiftUtil.vertSlideintegralSum) + (LiftUtil.vertSlidesUpD * derivative) + (LiftUtil.vertSlidesA);
+        output = (LiftUtil.vertSlidesUpP * LiftUtil.vertSlidesError) + (LiftUtil.vertSlidesUpI * LiftUtil.vertSlideintegralSum) + (LiftUtil.vertSlidesA);
+        //lift.setPower(output);
+        LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
+    }
+    public void vertSlidesPIDdown(double target){
+        ElapsedTime timer = new ElapsedTime();
+        ElapsedTime oneSec = new ElapsedTime();
+        //currentPos = (lift.getCurrentPosition());
+        LiftUtil.vertSlidesError = target - currentPos;
+        LiftUtil.vertSlideintegralSum += LiftUtil.vertSlidesError;
+        double derivative = (LiftUtil.vertSlidesError - LiftUtil.VertSlidesLastError) / timer.seconds();
+        output = (LiftUtil.vertSlidesDownP * LiftUtil.vertSlidesError) + (LiftUtil.vertSlidesDownI * LiftUtil.vertSlideintegralSum) + (LiftUtil.vertSlidesA);
+        //lift.setPower(output);
+        LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
+    }
+
+
+    public void horiSlidesPID(double target){
+        ElapsedTime timer = new ElapsedTime();
+        ElapsedTime oneSec = new ElapsedTime();
+        //currentPos = (lift.getCurrentPosition());
+        LiftUtil.horiSlidesError = target - currentPos;
+        LiftUtil.horiSlideintegralSum += LiftUtil.horiSlidesError;
+        output = (LiftUtil.horiSlidesUpP * LiftUtil.horiSlidesError) + (LiftUtil.horiSlidesUpI * LiftUtil.horiSlideintegralSum) + (LiftUtil.horiSlidesA);
+        //lift.setPower(output);
+        LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
+    }
+
 
 
 
