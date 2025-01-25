@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -87,11 +87,26 @@ public class TeleopPIDMain extends LinearOpMode {
                     robo.Hori(0);
                     robo.Vert(0);
                 }
-//                if (gamepad2.right_bumper) {
-//                    robo.claw(0.3);
-//                } else {
-//                    robo.claw(0.08);
-//                }
+
+                if (gamepad2.dpad_up) {
+                    robo.armFoward(0.15);
+                }
+                else if (gamepad2.dpad_down) {
+                    robo.armBack(0.15);
+                } else if(gamepad2.dpad_right){
+                    robo.clawSpinClockWise(0.5);
+                } else if(gamepad2.dpad_left){
+                    robo.clawSpinCounterClockWise(0.5);
+                } else {
+                    // set power to zero to keep still
+                    robo.armFoward(0);
+                }
+
+                if (gamepad2.right_bumper) {
+                    robo.claw(0.3);
+                } else {
+                    robo.claw(0.08);
+                }
 
 
                 telemetry.addData("LF", robo.leftFront.getPower());

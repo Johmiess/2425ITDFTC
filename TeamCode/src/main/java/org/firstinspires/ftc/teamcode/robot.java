@@ -32,6 +32,8 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -59,21 +61,25 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 @Config
 public class  robot {
+    // declaring all the variables that are gonna be used
     public LinearOpMode myOpMode;
     public OpMode notMyopMode;
     public DcMotorEx leftFront, leftBack, rightFront, rightBack, vertShift, horiShift, intake;
-    //    public CRServoImplEx rightAxon, leftAxon;
-//    public ServoImplEx claw;
+    public ServoImplEx claw;
+    public CRServoImplEx rightAxon, leftAxon;
+
+    public AnalogInput leftArm, rightArm;
     public double error;
     public  double output;
     public double currentPos;
-
     public robot(LinearOpMode opmode) {
         myOpMode = opmode;
     }
     public robot(OpMode opmode) {
         notMyopMode = opmode;
     }
+
+
 
     public double close_pos = 0.69;
     public double open_pos = 0.10;
@@ -87,8 +93,22 @@ public class  robot {
         intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
         vertShift = myOpMode.hardwareMap.get(DcMotorEx.class, "vertShift");
         horiShift = myOpMode.hardwareMap.get(DcMotorEx.class, "horiShift");
-//        rightAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "rightAxon");
-//        leftAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "leftAxon");
+        rightAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "rightAxon");
+        leftAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "leftAxon");
+        // analog for our axon encoder postions
+        leftArm =  myOpMode.hardwareMap.get(AnalogInput.class, "leftArm");
+        rightArm =  myOpMode.hardwareMap.get(AnalogInput.class, "rightArm");
+        // divide by 3.3 (the max voltage) to get a value between 0 and 1
+        claw = myOpMode.hardwareMap.get(ServoImplEx.class, "claw");
+
+
+
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+// get the voltage of our analog line
+// divide by 3.3 (the max voltage) to get a value between 0 and 1
+// multiply by 360 to convert it to 0 to 360 degrees
+
 //        claw = myOpMode.hardwareMap.get(ServoImplEx.class, "claw");
 
 //        claw.setPosition(0);
@@ -97,18 +117,17 @@ public class  robot {
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
-        leftBack.setDirection(DcMotorEx.Direction.REVERSE);
-        rightFront.setDirection(DcMotorEx.Direction.FORWARD);
-        rightBack.setDirection(DcMotorEx.Direction.FORWARD);
+//
 
         setMotorPowers(0);
         rightFront.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         rightBack.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         leftFront.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         leftBack.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+
+
+
     }
 
     public void setMotorPowers(double speed) {
@@ -125,28 +144,22 @@ public class  robot {
     }
 
 
-//
+
 //    public void workingPIDup(double target){
 //        ElapsedTime timer = new ElapsedTime();
-//            ElapsedTime oneSec = new ElapsedTime();
-//                currentPos = (linShift.getCurrentPosition());
-//                error = target - currentPos;
-//                LiftUtil.integralSum += error;
-//                double derivative = (error - LiftUtil.lastError) / timer.seconds();
-//                output = (LiftUtil.LIFTP * error) + (LiftUtil.LIFTI * LiftUtil.integralSum) + (LiftUtil.LIFTD * derivative) + (LiftUtil.LIFTA);
-//                output = (LiftUtil.LIFTP * error) + (LiftUtil.LIFTI * LiftUtil.integralSum) + (LiftUtil.LIFTA);
-//                linShift.setPower(output);
-//                LiftUtil.lastError = error;
-//        }
-
-
-
-//    public void setPower(double s1, double s2, double s3, double s4) {
-//        leftFront.setPower(s1);
-//        leftBack.setPower(s2);
-//        rightFront.setPower(s3);
-//        rightBack.setPower(s4);
+//        ElapsedTime oneSec = new ElapsedTime();
+//        //currentPos = (lift.getCurrentPosition());
+//        error = target - currentPos;
+//        LiftUtil.integralSum += error;
+//        double derivative = (error - LiftUtil.lastError) / timer.seconds();
+//        output = (LiftUtil.LIFTP * error) + (LiftUtil.LIFTI * LiftUtil.integralSum) + (LiftUtil.LIFTD * derivative) + (LiftUtil.LIFTA);
+//        output = (LiftUtil.LIFTP * error) + (LiftUtil.LIFTI * LiftUtil.integralSum) + (LiftUtil.LIFTA);
+//        //lift.setPower(output);
+//        LiftUtil.lastError = error;
 //    }
+
+
+
 
 
 
@@ -157,20 +170,55 @@ public class  robot {
     public void Hori(double speed) {
         horiShift.setPower(speed);
     }
-
     public void Vert(double speed) {
         vertShift.setPower(speed);
     }
 
 
-//   public void arm(double p){
-//        rightAxon.setPower(p);
-//       leftAxon.setPower(p);
-//   }
+    /*
+    Methods: armFoward and armBack
+    to make arm spin foward, Right Axon should be powered negative, left postive. For
+    right vice versa
+    - DONT MAKE THE ARM FOWARD/BACKWARD SPEED MORE THAN 0.25
+     */
+    public void armFoward(double power){
+        rightAxon.setPower((-power));
+        leftAxon.setPower((power));
+    }
 
-//   public void claw(double pos){
-//        claw.setPosition(pos);
-//   }
+    public void armBack(double power){
+        rightAxon.setPower((power));
+        leftAxon.setPower((-power));
+    }
 
+    /* to make claw spin:
+    (relative to the front)
+    both postive: clockwise
+    both negative: counterclockwise
+      */
+
+    public void clawSpinClockWise(double power){
+        rightAxon.setPower((power));
+        leftAxon.setPower((power));
+    }
+
+    public void clawSpinCounterClockWise(double power){
+        rightAxon.setPower((-power));
+        leftAxon.setPower((-power));
+    }
+
+    /**
+     * getRightArmEncoderPosition & getleftArmEncoderPosition
+     * @return Encoder postion of arm
+     */
+    public double getRightArmEncoderPosition(){
+        return  rightArm.getVoltage() / 3.3;
+    }
+    public double getLeftArmEncoderPosition(){
+        return  leftArm.getVoltage() / 3.3;
+    }
+    public void claw(double posi){
+        claw.setPosition(posi);
+    }
 
 }
