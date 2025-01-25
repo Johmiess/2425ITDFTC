@@ -29,13 +29,13 @@ public class TeleopPIDMain extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
-            double y = -gamepad1.left_stick_y;
+            double y = gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x * 1.1;
             double rx = gamepad1.right_stick_x;
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double lf = (y - x + rx) / denominator;
-            double lb = (y + x + rx) / denominator;
+            double lf = (y + x + rx) / denominator;
+            double lb = (y - x + rx) / denominator;
             double rf = (y - x - rx) / denominator;
             double rb = (y + x - rx) / denominator;
 
@@ -60,22 +60,14 @@ public class TeleopPIDMain extends LinearOpMode {
 
                 if (gamepad1.right_trigger > 0.1) {
                     robo.intake(-0.7);
-                } else if (gamepad1.right_trigger == 0) {
+                }
+                else if (gamepad1.right_trigger == 0) {
                     robo.intake(0);
                 }
 
                 if (gamepad1.x) {
                     robo.intake(0.7);
                 }
-//                if (gamepad2.dpad_up) {
-//                    robo.arm(0.85);
-//                } else if (gamepad2.dpad_down) {
-//                    robo.arm(0);
-//                }
-//                else if (gamepad2.dpad_right) {
-//                    robo.arm(0.6);
-//                }
-
 
                 if (gamepad2.y) {
                     robo.Hori(.75);
