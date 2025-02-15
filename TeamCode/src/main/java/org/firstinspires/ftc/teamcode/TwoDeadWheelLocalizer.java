@@ -15,6 +15,7 @@ import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -28,7 +29,8 @@ import org.firstinspires.ftc.teamcode.messages.TwoDeadWheelInputsMessage;
 public final class TwoDeadWheelLocalizer implements Localizer {
     public static class Params {
         public double parYTicks = -2794.517423018564; // y position of the parallel encoder (in tick units)
-        public double perpXTicks =  1228.744345396084; // x position of the perpendiclar
+        public double perpXTicks =  1228.744345396084; // x position of the perpendicular
+
     }
 
     public static Params PARAMS = new Params();
@@ -45,15 +47,14 @@ public final class TwoDeadWheelLocalizer implements Localizer {
     private boolean initialized;
     private Pose2d pose;
 
-    public TwoDeadWheelLocalizer(HardwareMap hardwareMap, IMU imu, double inPerTick, Pose2d pose) {
+    public TwoDeadWheelLocalizer(HardwareMap hardwareMap, IMU imu, double inPerTick, Pose2d initialPose) {
         // TODO: make sure your config has **motors** with these names (or change them)
         //   the encoders should be plugged into the slot matching the named motor
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         par = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightFront")));
         perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "leftFront")));
-
         // TODO: reverse encoder directions if needed
-           par.setDirection(DcMotorEx.Direction.REVERSE);
+        par.setDirection(DcMotorSimple.Direction.REVERSE);
 
         this.imu = imu;
 
@@ -61,7 +62,7 @@ public final class TwoDeadWheelLocalizer implements Localizer {
 
         FlightRecorder.write("TWO_DEAD_WHEEL_PARAMS", PARAMS);
 
-        this.pose = pose;
+        pose = initialPose;
     }
 
     @Override
