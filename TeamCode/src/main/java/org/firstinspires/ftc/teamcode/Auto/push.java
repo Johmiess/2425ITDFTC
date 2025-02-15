@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-@Autonomous(name = "blue_ob", group = "Autonomous")
+@Autonomous(name = "blue_ob2", group = "Autonomous")
 public class push extends LinearOpMode {
     @Override
     public void runOpMode() {

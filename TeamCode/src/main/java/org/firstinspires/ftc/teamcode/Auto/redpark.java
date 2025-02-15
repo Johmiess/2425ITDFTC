@@ -15,10 +15,11 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 public class redpark extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(24, -60, Math.toRadians(-90));
+        Pose2d initialPose = new Pose2d(24, -60, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         TrajectoryActionBuilder p1 = drive.actionBuilder(initialPose)
+                .setTangent(Math.PI/2)
                 .strafeTo(new Vector2d(60,-60));
 
         telemetry.update();

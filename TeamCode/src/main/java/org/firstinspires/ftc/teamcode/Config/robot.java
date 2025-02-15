@@ -63,7 +63,7 @@ public class  robot {
     // declaring all the variables that are gonna be used
     public LinearOpMode myOpMode;
     public OpMode notMyopMode;
-    public DcMotorEx leftFront, leftBack, rightFront, rightBack, vertShift, horiShift, intake;
+    public DcMotorEx leftFront, leftBack, rightFront, rightBack, rightThing, leftThing, intake;
     public ServoImplEx claw;
     public CRServoImplEx rightAxon, leftAxon;
 
@@ -88,9 +88,9 @@ public class  robot {
         leftBack = myOpMode.hardwareMap.get(DcMotorEx.class, "leftBack");
         rightFront = myOpMode.hardwareMap.get(DcMotorEx.class, "rightFront");
         rightBack = myOpMode.hardwareMap.get(DcMotorEx.class, "rightBack");
-        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
-        vertShift = myOpMode.hardwareMap.get(DcMotorEx.class, "vertShift");
-        horiShift = myOpMode.hardwareMap.get(DcMotorEx.class, "horiShift");
+//        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
+        rightThing = myOpMode.hardwareMap.get(DcMotorEx.class, "rightThing");
+        leftThing = myOpMode.hardwareMap.get(DcMotorEx.class, "leftThing");
         rightAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "rightAxon");
         leftAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "leftAxon");
         // analog for our axon encoder postions
@@ -115,6 +115,10 @@ public class  robot {
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightThing.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftThing.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
 //
 
         setMotorPowers(0);
@@ -186,17 +190,30 @@ public class  robot {
 
 
 
-    public void intake(double sp) {
-        intake.setPower(sp);
+//    public void intake(double sp) {
+//        intake.setPower(sp);
+//    }
+
+
+    /**
+     * verticalSlidesUP & verticalSlidesDown: Running leftThing and rightThing in oppsite directions should spin the
+     * verticle
+     * @param speed
+     */
+
+    public void verticalSlidesUP(double speed) {
+        leftThing.setPower(-speed);
+        rightThing.setPower(speed);
+    }
+    public void verticalSlidesDown(double speed) {
+        leftThing.setPower(-speed);
+        rightThing.setPower(speed);
     }
 
-    public void Hori(double speed) {
-        horiShift.setPower(speed);
+    public void intake(double speed){
+        leftThing.setPower(speed);
+        rightThing.setPower(speed);
     }
-    public void Vert(double speed) {
-        vertShift.setPower(speed);
-    }
-
 
     /*
     Methods: armFoward and armBack
