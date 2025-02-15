@@ -19,7 +19,7 @@ public class blue_asc extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         TrajectoryActionBuilder p1 = drive.actionBuilder(initialPose)
-                .setTangent(180)
+                .setTangent(Math.PI)
                 .lineToX(40)
                 .setTangent(-Math.PI/2)
                 .lineToY(0)

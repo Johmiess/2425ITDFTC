@@ -19,7 +19,6 @@ public class redpark extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         TrajectoryActionBuilder p1 = drive.actionBuilder(initialPose)
-                .setTangent(Math.PI/2)
                 .strafeTo(new Vector2d(60,-60));
 
         telemetry.update();
