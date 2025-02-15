@@ -26,7 +26,7 @@ public class RedSpicemen extends LinearOpMode {
         private Servo claw;
 
         public Claw(HardwareMap hardwareMap) {
-            claw = hardwareMap.get(Servo.class, "llama");
+            claw = hardwareMap.get(Servo.class, "claw");
         }
 
         public class CloseClaw implements Action {
