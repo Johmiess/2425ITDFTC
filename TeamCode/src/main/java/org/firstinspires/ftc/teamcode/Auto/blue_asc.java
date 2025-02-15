@@ -15,16 +15,16 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 public class blue_asc extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(24, 60, Math.toRadians(90));
+        Pose2d initialPose = new Pose2d(24, 60, Math.toRadians(-90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         TrajectoryActionBuilder p1 = drive.actionBuilder(initialPose)
-                .setTangent(0)
+                .setTangent(180)
                 .lineToX(40)
                 .setTangent(-Math.PI/2)
                 .lineToY(0)
                 .turn(Math.toRadians(-90))
-                .setTangent(0)
+                .setTangent(Math.PI)
                 .lineToX(20);
 
         telemetry.update();

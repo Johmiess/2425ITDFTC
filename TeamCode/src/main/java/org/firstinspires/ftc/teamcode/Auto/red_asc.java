@@ -72,17 +72,17 @@ public class red_asc extends LinearOpMode {
     }
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-24, -60, Math.toRadians(0));
+        Pose2d initialPose = new Pose2d(-24, -60, Math.toRadians(180));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         Arm arm = new Arm(hardwareMap);
         Lift lift = new Lift(hardwareMap);
         TrajectoryActionBuilder p1 = drive.actionBuilder(initialPose)
-                .setTangent(Math.PI)
+                .setTangent(0)
                 .lineToX(-40)
-                .setTangent(Math.PI/2)
+                .setTangent(-Math.PI/2)
                 .lineToY(0)
 //                .turn(Math.toRadians(-90))
-                .setTangent(-Math.PI)
+                .setTangent(Math.PI)
                 .lineToX(-20);
 
         telemetry.update();
