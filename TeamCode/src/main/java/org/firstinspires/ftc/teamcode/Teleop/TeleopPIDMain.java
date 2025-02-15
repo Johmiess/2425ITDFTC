@@ -7,12 +7,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Config.robot;
 
 @Config
-@TeleOp(name="teleport operations")
+@TeleOp(name="full teleop")
 public class TeleopPIDMain extends LinearOpMode {
     robot robo;
 
-    public static double intakeSpool = 0.4;
-    public static double scoringSpool = 1;
+    double x, y, rx, lf, lb, rf, rb, denominator = 0;
+
+    public static double power = 0.75;
 
     @Override
     public void runOpMode() {
@@ -28,62 +29,60 @@ public class TeleopPIDMain extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
-            double y = gamepad2.left_stick_y * -1;
-            double x = gamepad2.left_stick_x * 1.1;
-            double rx = gamepad2.right_stick_x;
+            y = -gamepad1.left_stick_y;
+            x = gamepad1.left_stick_x;
+            rx = gamepad1.right_stick_x;
 
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double lf = (y - x + rx) / denominator;
-            double lb = (y + x + rx) / denominator;
-            double rf = (y + x - rx) / denominator;
-            double rb = (y - x - rx) / denominator;
+            denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            lf = (y + x - rx) / denominator;
+            lb = (y - x - rx) / denominator;
+            rf = (y - x + rx) / denominator;
+            rb = (y + x + rx) / denominator;
 
-            if (gamepad2.right_trigger > 0.2) {
+            if (gamepad1.right_trigger > 0.2) {
                 robo.setMotorPowers(lf * 0.2, lb * 0.2, rf * 0.2, rb * 0.2);
             } else {
                 robo.setMotorPowers(lf, lb, rf, rb);
 
-            if (gamepad2.right_trigger > 0.1) {
-                robo.intake(-0.7);
+            if (gamepad1.x) {
+                robo.intake(0.75);
             }
-            else if (gamepad2.right_trigger == 0) {
+            else if (gamepad1.y){
+                robo.intake(-0.75);
+            } else {
                 robo.intake(0);
             }
 
-            if (gamepad2.x) {
-                robo.intake(0.7);
+            if (gamepad1.a) {
+                robo.verticalSlides(0.75);
+            } else if (gamepad1.b) {
+                robo.verticalSlides(-0.75);
+            } else {
+                robo.verticalSlides(0);
             }
 
-            if (gamepad2.y) {
-                robo.verticalSlidesUP(.35);
-            } else if (gamepad2.a) {
-                robo.verticalSlidesDown(.35);
-            } else {
-                robo.verticalSlidesDown(0);
-            }
-
-            if (gamepad2.dpad_up) {
-                robo.clawSpinCounterClockWise(0.15);
-//                    robo.armFoward(0.15);
-            }
-            else if (gamepad2.dpad_down) {
-//                    robo.armBack(0.15);
-                robo.clawSpinClockWise(0.15);
-            } else if(gamepad2.dpad_right){
-                robo.armBack(0.15);
-//                    robo.clawSpinClockWise(0.15);
-            } else if(gamepad2.dpad_left){
-                robo.armFoward(0.15);
-                //                    robo.clawSpinCounterClockWise(0.15);
-            } else {
-                robo.armBack(0.01);
-            }
-
-            if (gamepad2.right_bumper) {
-                robo.claw(1);
-            } else {
-                robo.claw(0);
-            }
+//            if (gamepad2.dpad_up) {
+//                robo.clawSpinCounterClockWise(0.15);
+////                    robo.armFoward(0.15);
+//            }
+//            else if (gamepad2.dpad_down) {
+////                    robo.armBack(0.15);
+//                robo.clawSpinClockWise(0.15);
+//            } else if(gamepad2.dpad_right){
+//                robo.armBack(0.15);
+////                    robo.clawSpinClockWise(0.15);
+//            } else if(gamepad2.dpad_left){
+//                robo.armFoward(0.15);
+//                //                    robo.clawSpinCounterClockWise(0.15);
+//            } else {
+//                robo.armBack(0.01);
+//            }
+//
+//            if (gamepad2.right_bumper) {
+//                robo.claw(1);
+//            } else {
+//                robo.claw(0);
+//            }
 
 
             telemetry.addData("LF", robo.leftFront.getPower());

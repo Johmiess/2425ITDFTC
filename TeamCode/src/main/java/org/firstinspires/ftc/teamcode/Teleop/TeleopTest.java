@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.Config.robot;
 
 @Config
-@TeleOp(name="tele-test")
+@TeleOp(name= "teleop")
 public class TeleopTest extends LinearOpMode {
     /**
      * TESTING TELEOP PLAYGROUND:

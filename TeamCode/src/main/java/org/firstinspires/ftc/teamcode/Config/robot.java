@@ -91,18 +91,16 @@ public class  robot {
 //        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
         rightThing = myOpMode.hardwareMap.get(DcMotorEx.class, "rightThing");
         leftThing = myOpMode.hardwareMap.get(DcMotorEx.class, "leftThing");
-        rightAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "rightAxon");
-        leftAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "leftAxon");
+//        rightAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "rightAxon");
+//        leftAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "leftAxon");
         // analog for our axon encoder postions
         leftArm =  myOpMode.hardwareMap.get(AnalogInput.class, "leftArm");
         rightArm =  myOpMode.hardwareMap.get(AnalogInput.class, "rightArm");
         // divide by 3.3 (the max voltage) to get a value between 0 and 1
-        claw = myOpMode.hardwareMap.get(ServoImplEx.class, "claw");
+//        claw = myOpMode.hardwareMap.get(ServoImplEx.class, "claw");
 
-
-
-        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBack.setDirection(DcMotorEx.Direction.REVERSE);
+        rightFront.setDirection(DcMotorEx.Direction.REVERSE);
 // get the voltage of our analog line
 // divide by 3.3 (the max voltage) to get a value between 0 and 1
 // multiply by 360 to convert it to 0 to 360 degrees
@@ -201,11 +199,8 @@ public class  robot {
      * @param speed
      */
 
-    public void verticalSlidesUP(double speed) {
-        leftThing.setPower(-speed);
-        rightThing.setPower(speed);
-    }
-    public void verticalSlidesDown(double speed) {
+    //positive speed = up, negative speed = down
+    public void verticalSlides(double speed) {
         leftThing.setPower(-speed);
         rightThing.setPower(speed);
     }
@@ -221,15 +216,15 @@ public class  robot {
     right vice versa
     - DONT MAKE THE ARM FOWARD/BACKWARD SPEED MORE THAN 0.25
      */
-    public void armFoward(double power){
-        rightAxon.setPower((-power));
-        leftAxon.setPower((power));
-    }
-
-    public void armBack(double power){
-        rightAxon.setPower((power));
-        leftAxon.setPower((-power));
-    }
+//    public void armFoward(double power){
+//        rightAxon.setPower((-power));
+//        leftAxon.setPower((power));
+//    }
+//
+//    public void armBack(double power){
+//        rightAxon.setPower((power));
+//        leftAxon.setPower((-power));
+//    }
 
     /* to make claw spin:
     (relative to the front)
@@ -237,28 +232,28 @@ public class  robot {
     both negative: counterclockwise
       */
 
-    public void clawSpinClockWise(double power){
-        rightAxon.setPower((power));
-        leftAxon.setPower((power));
-    }
-
-    public void clawSpinCounterClockWise(double power){
-        rightAxon.setPower((-power));
-        leftAxon.setPower((-power));
-    }
+//    public void clawSpinClockWise(double power){
+//        rightAxon.setPower((power));
+//        leftAxon.setPower((power));
+//    }
+//
+//    public void clawSpinCounterClockWise(double power){
+//        rightAxon.setPower((-power));
+//        leftAxon.setPower((-power));
+//    }
 
     /**
      * getRightArmEncoderPosition & getleftArmEncoderPosition
      * @return Encoder postion of arm
      */
-    public double getRightArmEncoderPosition(){
-        return  rightArm.getVoltage() / 3.3;
-    }
-    public double getLeftArmEncoderPosition(){
-        return  leftArm.getVoltage() / 3.3;
-    }
-    public void claw(double posi){
-        claw.setPosition(posi);
-    }
+//    public double getRightArmEncoderPosition(){
+//        return  rightArm.getVoltage() / 3.3;
+//    }
+//    public double getLeftArmEncoderPosition(){
+//        return  leftArm.getVoltage() / 3.3;
+//    }
+//    public void claw(double posi){
+//        claw.setPosition(posi);
+//    }
 
 }
