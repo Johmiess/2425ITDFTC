@@ -54,7 +54,7 @@ public class RedSpicemen extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(12, -59.5, Math.toRadians(-90)));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(12, -59.5, Math.toRadians(90)));
         Claw claw = new Claw(hardwareMap);
 
         // vision here that outputs position
