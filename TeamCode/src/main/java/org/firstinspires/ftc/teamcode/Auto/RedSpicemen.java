@@ -54,7 +54,7 @@ public class RedSpicemen extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(12, -59.5, Math.toRadians(90)));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -59.5, Math.toRadians(90)));
         Claw claw = new Claw(hardwareMap);
 
         // vision here that outputs position
@@ -78,20 +78,19 @@ public class RedSpicemen extends LinearOpMode {
 //                .build();
         trajectoryActionCloseOut = drive.actionBuilder(drive.pose)
                 .setTangent(-90)
-                .strafeTo(new Vector2d(1, -35))
-                .strafeTo(new Vector2d(35, -35))
+                .strafeTo(new Vector2d(40, -35))
                 .waitSeconds(0.1)
-                .lineToY(-12)
-                .strafeTo(new Vector2d(43, -12))
-                .waitSeconds(0.1)
-                .lineToY(-50)
-                .waitSeconds(0.1)
-                .lineToY(-12)
-                .strafeTo(new Vector2d(50, -12))
+                .lineToY(0)
+                .strafeTo(new Vector2d(50, 0))
                 .waitSeconds(0.1)
                 .lineToY(-50)
-                .lineToY(-12)
-                .strafeTo(new Vector2d(60,-12))
+                .waitSeconds(0.1)
+                .lineToY(0)
+                .strafeTo(new Vector2d(60, 0))
+                .waitSeconds(0.1)
+                .lineToY(-50)
+                .lineToY(0)
+                .strafeTo(new Vector2d(70,0))
                 .setTangent(Math.PI/2)
                 .lineToY(-50)
                 .build();
