@@ -43,7 +43,7 @@ public class RedSpicemen extends LinearOpMode {
         public class OpenClaw implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                claw.setPosition(1.0);
+                claw.setPosition(0);
                 return false;
             }
         }
@@ -64,18 +64,9 @@ public class RedSpicemen extends LinearOpMode {
         Action trajectoryAction3;
         Action trajectoryActionCloseOut;
 
-//  v      trajectoryAction1 = drive.actionBuilder(drive.pose)
-//                .lineToYSplineHeading(33, Math.toRadians(0))
-//                .waitSeconds(2)
-//                .setTangent(Math.toRadians(90))
-//                .lineToY(48)
-//                .setTangent(Math.toRadians(0))
-//                .lineToX(32)
-//                .strafeTo(new Vector2d(44.5, 30))
-//                .turn(Math.toRadians(180))
-//                .lineToX(47.5)
-//                .waitSeconds(3)
-//                .build();
+        trajectoryAction1 = drive.actionBuilder(drive.pose)
+                .strafeTo(new Vector2d(0, -30))
+                .build();
         trajectoryActionCloseOut = drive.actionBuilder(drive.pose)
                 .strafeTo(new Vector2d(42, -35))
                 .waitSeconds(0.1)
@@ -94,7 +85,7 @@ public class RedSpicemen extends LinearOpMode {
                 .build();
 
         // actions that need to happen on init; for instance, a claw tightening.
-        Actions.runBlocking(claw.closeClaw());
+        Actions.runBlocking(claw.openClaw());
 
 
         while (!isStopRequested() && !opModeIsActive()) {
@@ -119,7 +110,9 @@ public class RedSpicemen extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        trajectoryActionCloseOut
+                        trajectoryActionCloseOut,
+                        claw.closeClaw(),
+                        trajectoryAction1
                 )
         );
     }
