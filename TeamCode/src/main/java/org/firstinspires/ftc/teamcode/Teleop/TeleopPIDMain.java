@@ -62,24 +62,24 @@ public class TeleopPIDMain extends LinearOpMode {
             }
 
             if (gamepad2.dpad_up) {
-                robo.clawSpinCounterClockWise(0.15);
+                robo.clawSpinCounterClockWise(.8);
 //                    robo.armFoward(0.15);
             }
             else if (gamepad2.dpad_down) {
 //                    robo.armBack(0.15);
-                robo.clawSpinClockWise(0.15);
+                robo.clawSpinClockWise(.8);
             } else if(gamepad2.dpad_right){
-                robo.armBack(0.15);
+                robo.armBack(1);
 //                    robo.clawSpinClockWise(0.15);
             } else if(gamepad2.dpad_left){
-                robo.armFoward(0.15);
+                robo.armFoward(.8);
                 //                    robo.clawSpinCounterClockWise(0.15);
             } else {
-                robo.armBack(0.01);
+                robo.armBack(0);
             }
 
             if (gamepad2.right_bumper) {
-                robo.claw(1);
+                robo.claw(.8);
             } else {
                 robo.claw(0);
             }

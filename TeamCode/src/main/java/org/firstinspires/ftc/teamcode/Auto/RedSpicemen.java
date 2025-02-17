@@ -6,10 +6,12 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -17,6 +19,8 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 @Autonomous(name = "RedSpicemen", group = "Autonomous")
@@ -43,7 +47,7 @@ public class RedSpicemen extends LinearOpMode {
         public class OpenClaw implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                claw.setPosition(1.0);
+                claw.setPosition(0);
                 return false;
             }
         }
@@ -52,31 +56,50 @@ public class RedSpicemen extends LinearOpMode {
         }
     }
 
+    public class Arm{
+        private CRServoImplEx rightAxon, leftAxon;
+        private ElapsedTime time;
+
+        public Arm(HardwareMap hardwareMap){leftAxon = hardwareMap.get(CRServoImplEx.class, "leftAxon"); rightAxon = hardwareMap.get(CRServoImplEx.class, "rightAxon");time = new ElapsedTime();}
+        public class ArmUp implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet){
+                time.reset();
+                while (time.seconds()<.3){
+                    rightAxon.setPower(1);
+                    leftAxon.setPower(1);
+                }
+                rightAxon.setPower(0);
+                leftAxon.setPower(0);
+                return false;
+            }
+        }
+        public Action armUp() {return new Arm.ArmUp();}
+        public class ArmDown implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet){
+                time.reset();
+                while (time.seconds()<.25){
+                    rightAxon.setPower(-1);
+                    leftAxon.setPower(-1);
+                }
+                rightAxon.setPower(0);
+                leftAxon.setPower(0);
+                return false;
+            }
+        }
+        public Action armDown() {return new Arm.ArmDown();}
+    }
+
     @Override
     public void runOpMode() {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -59.5, Math.toRadians(90)));
         Claw claw = new Claw(hardwareMap);
+        Arm arm = new Arm(hardwareMap);
 
         // vision here that outputs position
 
-        Action trajectoryAction1;
-        Action trajectoryAction2;
-        Action trajectoryAction3;
-        Action trajectoryActionCloseOut;
-
-//  v      trajectoryAction1 = drive.actionBuilder(drive.pose)
-//                .lineToYSplineHeading(33, Math.toRadians(0))
-//                .waitSeconds(2)
-//                .setTangent(Math.toRadians(90))
-//                .lineToY(48)
-//                .setTangent(Math.toRadians(0))
-//                .lineToX(32)
-//                .strafeTo(new Vector2d(44.5, 30))
-//                .turn(Math.toRadians(180))
-//                .lineToX(47.5)
-//                .waitSeconds(3)
-//                .build();
-        trajectoryActionCloseOut = drive.actionBuilder(drive.pose)
+        TrajectoryActionBuilder temp = drive.actionBuilder(drive.pose)
                 .strafeTo(new Vector2d(42, -35))
                 .waitSeconds(0.1)
                 .lineToY(0)
@@ -91,35 +114,30 @@ public class RedSpicemen extends LinearOpMode {
                 .strafeTo(new Vector2d(70,0))
                 .setTangent(Math.PI/2)
                 .lineToY(-50)
-                .build();
+//                .stopAndAdd(claw.openClaw())
+                .strafeTo(new Vector2d(0, -30))
+                .waitSeconds(.1);
+
+
 
         // actions that need to happen on init; for instance, a claw tightening.
-        Actions.runBlocking(claw.closeClaw());
+        Actions.runBlocking(arm.armUp());
 
 
         while (!isStopRequested() && !opModeIsActive()) {
             telemetry.update();
         }
 
-//        int startPosition = visionOutputPosition;
-//        telemetry.addData("Starting Position", startPosition);
         telemetry.update();
         waitForStart();
 
         if (isStopRequested()) return;
 
-//        Action trajectoryActionChosen  = trajectoryAction1;
-//        if (startPosition == 1) {
-//            trajectoryActionChosen = trajectoryAction1;
-//        } else if (startPosition == 2) {
-//            trajectoryActionChosen = trajectoryAction2;
-//        } else {
-//            trajectoryActionChosen = trajectoryAction3;
-//        }
+        Action traj = temp.build();
 
         Actions.runBlocking(
                 new SequentialAction(
-                        trajectoryActionCloseOut
+                        traj
                 )
         );
     }
