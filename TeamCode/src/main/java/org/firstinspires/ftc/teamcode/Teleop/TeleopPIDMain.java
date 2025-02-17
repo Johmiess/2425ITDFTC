@@ -29,7 +29,7 @@ public class TeleopPIDMain extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
-            y = -gamepad1.left_stick_y;
+            y = gamepad1.left_stick_y;
             x = gamepad1.left_stick_x;
             rx = gamepad1.right_stick_x;
 
@@ -61,28 +61,28 @@ public class TeleopPIDMain extends LinearOpMode {
                 robo.verticalSlides(0);
             }
 
-//            if (gamepad2.dpad_up) {
-//                robo.clawSpinCounterClockWise(0.15);
-////                    robo.armFoward(0.15);
-//            }
-//            else if (gamepad2.dpad_down) {
-////                    robo.armBack(0.15);
-//                robo.clawSpinClockWise(0.15);
-//            } else if(gamepad2.dpad_right){
-//                robo.armBack(0.15);
-////                    robo.clawSpinClockWise(0.15);
-//            } else if(gamepad2.dpad_left){
-//                robo.armFoward(0.15);
-//                //                    robo.clawSpinCounterClockWise(0.15);
-//            } else {
-//                robo.armBack(0.01);
-//            }
-//
-//            if (gamepad2.right_bumper) {
-//                robo.claw(1);
-//            } else {
-//                robo.claw(0);
-//            }
+            if (gamepad2.dpad_up) {
+                robo.clawSpinCounterClockWise(0.15);
+//                    robo.armFoward(0.15);
+            }
+            else if (gamepad2.dpad_down) {
+//                    robo.armBack(0.15);
+                robo.clawSpinClockWise(0.15);
+            } else if(gamepad2.dpad_right){
+                robo.armBack(0.15);
+//                    robo.clawSpinClockWise(0.15);
+            } else if(gamepad2.dpad_left){
+                robo.armFoward(0.15);
+                //                    robo.clawSpinCounterClockWise(0.15);
+            } else {
+                robo.armBack(0.01);
+            }
+
+            if (gamepad2.right_bumper) {
+                robo.claw(1);
+            } else {
+                robo.claw(0);
+            }
 
 
             telemetry.addData("LF", robo.leftFront.getPower());
