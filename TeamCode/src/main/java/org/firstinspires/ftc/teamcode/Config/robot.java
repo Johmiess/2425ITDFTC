@@ -216,12 +216,12 @@ public class  robot {
     right vice versa
     - DONT MAKE THE ARM FOWARD/BACKWARD SPEED MORE THAN 0.25
      */
-    public void armFoward(double power){
+    public void clawSpinClockWise(double power){
         rightAxon.setPower((-power));
         leftAxon.setPower((power));
     }
 
-    public void armBack(double power){
+    public void clawSpinCounterClockWise(double power){
         rightAxon.setPower((power));
         leftAxon.setPower((-power));
     }
@@ -232,12 +232,12 @@ public class  robot {
     both negative: counterclockwise
       */
 
-    public void clawSpinClockWise(double power){
+    public void armBack (double power){ //claw backword
         rightAxon.setPower((power));
         leftAxon.setPower((power));
     }
 
-    public void clawSpinCounterClockWise(double power){
+    public void armFoward (double power){ // clawfoward
         rightAxon.setPower((-power));
         leftAxon.setPower((-power));
     }
