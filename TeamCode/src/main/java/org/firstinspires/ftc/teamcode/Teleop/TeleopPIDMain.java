@@ -89,7 +89,10 @@ public class TeleopPIDMain extends LinearOpMode {
             telemetry.addData("RF", robo.rightFront.getPower());
             telemetry.addData("RB", robo.rightBack.getPower());
             telemetry.addData("RF", robo.rightFront.getPower());
-            telemetry.update();
+            telemetry.addData("JST LEFT", robo.getRightArmEncoderPosition());
+            telemetry.addData("JST RIGHT", robo.getLeftArmEncoderPosition());
+
+                telemetry.update();
 
             }
         }
