@@ -33,6 +33,20 @@ public class LiftUtil {
 
     public static double horiSlidesLastError = .25;
 
+    public static double armError = 0;
+
+    public static double armP = 0.001;
+    public static double armI = 0;
+
+    public static double armD = 1;
+    public static double armIntegralSum = 0;
+
+    public static double armA = 0;
+
+    public static double armLastError = .25;
+
+
+
 
 
 }

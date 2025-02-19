@@ -144,8 +144,10 @@ public class  robot {
     }
 
 
-
-
+    /**
+     * Two different PID methods for vert slides
+     * @param target
+     */
     public void vertSlidesPIDup(double target){
         ElapsedTime timer = new ElapsedTime();
         ElapsedTime oneSec = new ElapsedTime();
@@ -158,6 +160,7 @@ public class  robot {
         //lift.setPower(output);
         LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
     }
+
     public void vertSlidesPIDdown(double target){
         ElapsedTime timer = new ElapsedTime();
         ElapsedTime oneSec = new ElapsedTime();
@@ -170,11 +173,13 @@ public class  robot {
         LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
     }
 
-
+    /**
+     * PID FOR HORIZONTAL SLIDES
+     * @param target
+     */
     public void horiSlidesPID(double target){
         ElapsedTime timer = new ElapsedTime();
-        ElapsedTime oneSec = new ElapsedTime();
-        //currentPos = (lift.getCurrentPosition());
+//        currentPos = (lift.getCurrentPosition());
         LiftUtil.horiSlidesError = target - currentPos;
         LiftUtil.horiSlideintegralSum += LiftUtil.horiSlidesError;
         output = (LiftUtil.horiSlidesUpP * LiftUtil.horiSlidesError) + (LiftUtil.horiSlidesUpI * LiftUtil.horiSlideintegralSum) + (LiftUtil.horiSlidesA);
@@ -182,6 +187,20 @@ public class  robot {
         LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
     }
 
+    /**
+     * ARM PID BASED OFF OF THE LEFT ARM ENCODER POSITION :)
+     * @param target
+     */
+    public void armPID(double target){
+        ElapsedTime timer = new ElapsedTime();
+        currentPos = (getLeftArmEncoderPosition());
+        LiftUtil.armError = target - currentPos;
+        LiftUtil.armIntegralSum += LiftUtil.armError;
+        output = (LiftUtil.armP * LiftUtil.horiSlidesError) + (LiftUtil.armI * LiftUtil.horiSlideintegralSum) + (LiftUtil.horiSlidesA) + LiftUtil.armA;
+        LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
+        leftAxon.setPower(output);
+        rightAxon.setPower(output);
+    }
 
 
 
@@ -210,12 +229,12 @@ public class  robot {
         rightThing.setPower(speed);
     }
 
-    /*
+    /**
     Methods: armFoward and armBack
     to make arm spin foward, Right Axon should be powered negative, left postive. For
     right vice versa
     - DONT MAKE THE ARM FOWARD/BACKWARD SPEED MORE THAN 0.25
-     */
+     **/
     public void clawSpinClockWise(double power){
         rightAxon.setPower((-power));
         leftAxon.setPower((power));
@@ -226,11 +245,11 @@ public class  robot {
         leftAxon.setPower((-power));
     }
 
-    /* to make claw spin:
+    /** to make claw spin:
     (relative to the front)
     both postive: clockwise
     both negative: counterclockwise
-      */
+      **/
 
     public void armBack (double power){ //claw backword
         rightAxon.setPower((power));
@@ -243,13 +262,16 @@ public class  robot {
     }
 
     /**
-     * getRightArmEncoderPosition & getleftArmEncoderPosition
-     * @return Encoder postion of arm
-     */
+     getRightArmEncoderPosition & getleftArmEncoderPosition
+     @return Encoder postion of arm
+     **/
     public double getRightArmEncoderPosition(){ return  rightArm.getVoltage() / 3.3 * 360;}
     public double getLeftArmEncoderPosition(){
         return  leftArm.getVoltage() / 3.3 * 360;
     }
+
+
+
     public void claw(double posi){
         claw.setPosition(posi);
     }
