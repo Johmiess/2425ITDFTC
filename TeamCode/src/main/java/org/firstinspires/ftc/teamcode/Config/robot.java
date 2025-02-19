@@ -246,11 +246,9 @@ public class  robot {
      * getRightArmEncoderPosition & getleftArmEncoderPosition
      * @return Encoder postion of arm
      */
-    public double getRightArmEncoderPosition(){
-        return  rightArm.getVoltage() / 3.3;
-    }
+    public double getRightArmEncoderPosition(){ return  rightArm.getVoltage() / 3.3 * 360;}
     public double getLeftArmEncoderPosition(){
-        return  leftArm.getVoltage() / 3.3;
+        return  leftArm.getVoltage() / 3.3 * 360;
     }
     public void claw(double posi){
         claw.setPosition(posi);

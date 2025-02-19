@@ -30,6 +30,8 @@ public class MeepMeepTesting {
                 .strafeTo(new Vector2d(70,0))
                 .setTangent(Math.PI/2)
                 .lineToY(-50)
+                .lineToY(0)
+                .lineToY(-50)
                 .strafeTo(new Vector2d(0, -30))
                 .build());
 

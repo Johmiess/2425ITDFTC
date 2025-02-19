@@ -114,14 +114,20 @@ public class RedSpicemen extends LinearOpMode {
                 .strafeTo(new Vector2d(70,0))
                 .setTangent(Math.PI/2)
                 .lineToY(-50)
-//                .stopAndAdd(claw.openClaw())
+                .lineToY(0)
+                .lineToY(-57)
+                .stopAndAdd(arm.armUp())
+                .stopAndAdd(arm.armUp())
+                .stopAndAdd(arm.armUp())
+                .stopAndAdd(claw.closeClaw())
+                .waitSeconds(.5)
                 .strafeTo(new Vector2d(0, -30))
-                .waitSeconds(.1);
-
-
+                .stopAndAdd(arm.armDown())
+                .stopAndAdd(arm.armDown())
+                .lineToY(-25);
 
         // actions that need to happen on init; for instance, a claw tightening.
-        Actions.runBlocking(arm.armUp());
+        Actions.runBlocking(claw.openClaw());
 
 
         while (!isStopRequested() && !opModeIsActive()) {
