@@ -54,6 +54,6 @@ public class TeleopTest2 extends LinearOpMode {
 
             telemetry.update();
 
-            }
         }
     }
+}

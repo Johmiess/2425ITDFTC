@@ -44,49 +44,49 @@ public class TeleopPIDMain extends LinearOpMode {
             } else {
                 robo.setMotorPowers(lf, lb, rf, rb);
 
-            if (gamepad1.x) {
-                robo.intake(0.75);
-            }
-            else if (gamepad1.y){
-                robo.intake(-0.75);
-            } else {
-                robo.intake(0);
-            }
+                if (gamepad1.x) {
+                    robo.intake(0.75);
+                }
+                else if (gamepad1.y){
+                    robo.intake(-0.75);
+                } else {
+                    robo.intake(0);
+                }
 
-            if (gamepad1.a) {
-                robo.verticalSlides(0.75);
-            } else if (gamepad1.b) {
-                robo.verticalSlides(-0.75);
-            } else {
-                robo.verticalSlides(0);
-            }
+                if (gamepad1.a) {
+                    robo.verticalSlides(0.75);
+                } else if (gamepad1.b) {
+                    robo.verticalSlides(-0.75);
+                } else {
+                    robo.verticalSlides(0);
+                }
 
-            if (gamepad1.dpad_up) {
-                robo.armFoward(0.8);
-            }
-            else if (gamepad1.dpad_down) {
-                robo.armBack(0.8);
-            } else if(gamepad1.dpad_right){
-                robo.clawSpinClockWise(0.15);
-            } else if(gamepad1.dpad_left){
-                robo.clawSpinCounterClockWise(0.15);
-            } else {
-                robo.armBack(0.01);
-            }
+                if (gamepad1.dpad_up) {
+                    robo.armFoward(0.8);
+                }
+                else if (gamepad1.dpad_down) {
+                    robo.armBack(0.8);
+                } else if(gamepad1.dpad_right){
+                    robo.clawSpinClockWise(0.15);
+                } else if(gamepad1.dpad_left){
+                    robo.clawSpinCounterClockWise(0.15);
+                } else {
+                    robo.armBack(0.01);
+                }
 
-            if (gamepad1.right_bumper) {
-                robo.claw(1);
-            } else {
-                robo.claw(0);
-            }
+                if (gamepad1.right_bumper) {
+                    robo.claw(1);
+                } else {
+                    robo.claw(0);
+                }
 
 
-            telemetry.addData("LF", robo.leftFront.getPower());
-            telemetry.addData("RF", robo.rightFront.getPower());
-            telemetry.addData("RB", robo.rightBack.getPower());
-            telemetry.addData("RF", robo.rightFront.getPower());
-            telemetry.addData("JST LEFT", robo.getRightArmEncoderPosition());
-            telemetry.addData("JST RIGHT", robo.getLeftArmEncoderPosition());
+                telemetry.addData("LF", robo.leftFront.getPower());
+                telemetry.addData("RF", robo.rightFront.getPower());
+                telemetry.addData("RB", robo.rightBack.getPower());
+                telemetry.addData("RF", robo.rightFront.getPower());
+                telemetry.addData("JST LEFT", robo.getRightArmEncoderPosition());
+                telemetry.addData("JST RIGHT", robo.getLeftArmEncoderPosition());
 
                 telemetry.update();
 
