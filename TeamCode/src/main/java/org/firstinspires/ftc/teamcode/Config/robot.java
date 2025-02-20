@@ -230,10 +230,10 @@ public class  robot {
     }
 
     /**
-    Methods: armFoward and armBack
-    to make arm spin foward, Right Axon should be powered negative, left postive. For
-    right vice versa
-    - DONT MAKE THE ARM FOWARD/BACKWARD SPEED MORE THAN 0.25
+     Methods: armFoward and armBack
+     to make arm spin foward, Right Axon should be powered negative, left postive. For
+     right vice versa
+     - DONT MAKE THE ARM FOWARD/BACKWARD SPEED MORE THAN 0.25
      **/
     public void clawSpinClockWise(double power){
         rightAxon.setPower((-power));
@@ -246,10 +246,10 @@ public class  robot {
     }
 
     /** to make claw spin:
-    (relative to the front)
-    both postive: clockwise
-    both negative: counterclockwise
-      **/
+     (relative to the front)
+     both postive: clockwise
+     both negative: counterclockwise
+     **/
 
     public void armBack (double power){ //claw backword
         rightAxon.setPower((power));
