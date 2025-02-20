@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 
-public class LiftUtil {
+public class  LiftUtil {
 
     public static double vertSlidesError = 0;
 

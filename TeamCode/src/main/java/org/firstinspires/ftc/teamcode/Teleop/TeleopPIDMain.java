@@ -45,12 +45,12 @@ public class TeleopPIDMain extends LinearOpMode {
                 robo.setMotorPowers(lf, lb, rf, rb);
 
             if (gamepad1.x) {
-                robo.intake(0.75);
+                robo.horizontalSlides(0.75);
             }
             else if (gamepad1.y){
-                robo.intake(-0.75);
+                robo.horizontalSlides(-0.75);
             } else {
-                robo.intake(0);
+                robo.horizontalSlides(0);
             }
 
             if (gamepad1.a) {

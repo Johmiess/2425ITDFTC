@@ -224,7 +224,7 @@ public class  robot {
         rightThing.setPower(speed);
     }
 
-    public void intake(double speed){
+    public void horizontalSlides(double speed){
         leftThing.setPower(speed);
         rightThing.setPower(speed);
     }
