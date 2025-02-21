@@ -88,6 +88,8 @@ public class  robot {
         leftBack = myOpMode.hardwareMap.get(DcMotorEx.class, "leftBack");
         rightFront = myOpMode.hardwareMap.get(DcMotorEx.class, "rightFront");
         rightBack = myOpMode.hardwareMap.get(DcMotorEx.class, "rightBack");
+        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
+
 //        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
         rightThing = myOpMode.hardwareMap.get(DcMotorEx.class, "rightThing");
         leftThing = myOpMode.hardwareMap.get(DcMotorEx.class, "leftThing");
@@ -96,7 +98,6 @@ public class  robot {
         // analog for our axon encoder postions
         leftArm =  myOpMode.hardwareMap.get(AnalogInput.class, "leftArm");
         rightArm =  myOpMode.hardwareMap.get(AnalogInput.class, "rightArm");
-        // divide by 3.3 (the max voltage) to get a value between 0 and 1
         claw = myOpMode.hardwareMap.get(ServoImplEx.class, "claw");
 
         rightBack.setDirection(DcMotorEx.Direction.REVERSE);
@@ -115,6 +116,8 @@ public class  robot {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightThing.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftThing.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
 
 //
@@ -124,6 +127,7 @@ public class  robot {
         rightBack.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         leftFront.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         leftBack.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
 
 
@@ -256,10 +260,18 @@ public class  robot {
         leftAxon.setPower((power));
     }
 
-    public void  armFoward (double power){ // clawfoward
+    public void armFoward (double power){ // clawfoward
         rightAxon.setPower((-power));
         leftAxon.setPower((-power));
     }
+
+    public void setIntake (double power){ // setting power to intake
+        intake.setPower(power);
+    }
+
+
+
+
 
     /**
      getRightArmEncoderPosition & getleftArmEncoderPosition

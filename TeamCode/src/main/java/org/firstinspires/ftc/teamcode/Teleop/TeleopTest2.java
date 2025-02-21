@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Config.robot;
 
 @Config
-@TeleOp(name="full teleop")
+@TeleOp(name="TELEOP TEST 2")
 public class TeleopTest2 extends LinearOpMode {
     robot robo;
 
@@ -41,7 +41,7 @@ public class TeleopTest2 extends LinearOpMode {
             rb = (y + x + rx) / denominator;
 
             if (gamepad1.x) {
-                robo.armPID(target);
+                robo.vertSlidesPIDup(target);
             }
 
 

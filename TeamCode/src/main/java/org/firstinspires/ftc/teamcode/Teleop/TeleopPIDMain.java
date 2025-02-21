@@ -39,10 +39,29 @@ public class TeleopPIDMain extends LinearOpMode {
             rf = (y - x + rx) / denominator;
             rb = (y + x + rx) / denominator;
 
+            //bumper & trigger controls
+
+            if (gamepad1.right_bumper) {
+                robo.claw(1);
+            } else {
+                robo.claw(0);
+            }
+
             if (gamepad1.right_trigger > 0.2) {
                 robo.setMotorPowers(lf * 0.2, lb * 0.2, rf * 0.2, rb * 0.2);
             } else {
                 robo.setMotorPowers(lf, lb, rf, rb);
+            }
+
+            if(gamepad1.left_trigger > 0.2){
+                robo.setIntake(gamepad1.left_trigger);
+            }
+
+            if(gamepad1.left_bumper){
+                robo.setIntake(0.5);
+            }
+
+            // x,y,a,b
 
             if (gamepad1.x) {
                 robo.horizontalSlides(0.75);
@@ -61,6 +80,9 @@ public class TeleopPIDMain extends LinearOpMode {
                 robo.verticalSlides(0);
             }
 
+
+            // dpad controls
+
             if (gamepad1.dpad_up) {
                 robo.armFoward(0.8);
             }
@@ -74,13 +96,6 @@ public class TeleopPIDMain extends LinearOpMode {
                 robo.armBack(0.01);
             }
 
-            if (gamepad1.right_bumper) {
-                robo.claw(1);
-            } else {
-                robo.claw(0);
-            }
-
-
             telemetry.addData("LF", robo.leftFront.getPower());
             telemetry.addData("RF", robo.rightFront.getPower());
             telemetry.addData("RB", robo.rightBack.getPower());
@@ -88,9 +103,8 @@ public class TeleopPIDMain extends LinearOpMode {
             telemetry.addData("JST LEFT", robo.getRightArmEncoderPosition());
             telemetry.addData("JST RIGHT", robo.getLeftArmEncoderPosition());
 
-                telemetry.update();
+            telemetry.update();
 
             }
         }
     }
-}
