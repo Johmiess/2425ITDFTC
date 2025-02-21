@@ -30,7 +30,7 @@ public class TeleopPIDMain extends LinearOpMode {
 
         while (opModeIsActive()) {
             y = gamepad1.left_stick_y;
-            x = gamepad1.left_stick_x;
+            x = -gamepad1.left_stick_x;
             rx = gamepad1.right_stick_x;
 
             denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
@@ -41,7 +41,7 @@ public class TeleopPIDMain extends LinearOpMode {
 
             //bumper & trigger controls
 
-            if (gamepad1.right_bumper) {
+            if (gamepad2.right_bumper) {
                 robo.claw(1);
             } else {
                 robo.claw(0);
@@ -55,18 +55,18 @@ public class TeleopPIDMain extends LinearOpMode {
 
             if(gamepad1.left_trigger > 0.2){
                 robo.setIntake(gamepad1.left_trigger);
-            }
-
-            if(gamepad1.left_bumper){
-                robo.setIntake(0.5);
+            } else if(gamepad1.left_bumper){
+                robo.setIntake(-1);
+            } else {
+                robo.setIntake(0);
             }
 
             // x,y,a,b
 
-            if (gamepad1.x) {
+            if (gamepad2.a) {
                 robo.horizontalSlides(0.75);
             }
-            else if (gamepad1.y){
+            else if (gamepad2.y){
                 robo.horizontalSlides(-0.75);
             } else {
                 robo.horizontalSlides(0);
@@ -83,14 +83,14 @@ public class TeleopPIDMain extends LinearOpMode {
 
             // dpad controls
 
-            if (gamepad1.dpad_up) {
+            if (gamepad2.dpad_up) {
                 robo.armFoward(0.8);
             }
-            else if (gamepad1.dpad_down) {
+            else if (gamepad2.dpad_down) {
                 robo.armBack(0.8);
-            } else if(gamepad1.dpad_right){
+            } else if(gamepad2.dpad_right){
                 robo.clawSpinClockWise(0.15);
-            } else if(gamepad1.dpad_left){
+            } else if(gamepad2.dpad_left){
                 robo.clawSpinCounterClockWise(0.15);
             } else {
                 robo.armBack(0.01);

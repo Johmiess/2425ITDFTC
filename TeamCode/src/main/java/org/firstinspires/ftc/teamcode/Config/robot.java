@@ -43,17 +43,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * This file works in conjunction with the External Hardware Class sample called: ConceptExternalHardwareClass.java
  * Please read the explanations in that Sample about how to use this class definition.
- *
+
  * This file defines a Java Class that performs all the setup and configuration for a sample robot's hardware (motors and sensors).
  * It assumes three motors (left_drive, right_drive and arm) and two servos (left_hand and right_hand)
- *
+
  * This one file/class can be used by ALL of your OpModes without having to cut & paste the code each time.
- *
+
  * Where possible, the actual hardware objects are "abstracted" (or hidden) so the OpMode code just makes calls into the class,
  * rather than accessing the internal hardware directly. This is why the objects are declared "private".
- *
+
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with *exactly the same name*.
- *
+
  * Or.. In OnBot Java, add a new file named RobotHardware.java, drawing from this Sample; select Not an OpMode.
  * Also add a new OpMode, drawing from the Sample ConceptExternalHardwareClass.java; select TeleOp.
  *
@@ -65,7 +65,7 @@ public class  robot {
     public OpMode notMyopMode;
     public DcMotorEx leftFront, leftBack, rightFront, rightBack, rightThing, leftThing, intake;
     public ServoImplEx claw;
-    public CRServoImplEx rightAxon, leftAxon;
+    public ServoImplEx rightAxon, leftAxon;
 
     public AnalogInput leftArm, rightArm;
     public  double output;
@@ -93,8 +93,8 @@ public class  robot {
 //        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
         rightThing = myOpMode.hardwareMap.get(DcMotorEx.class, "rightThing");
         leftThing = myOpMode.hardwareMap.get(DcMotorEx.class, "leftThing");
-        leftAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "leftAxon");
-        rightAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "rightAxon");
+        leftAxon = myOpMode.hardwareMap.get(ServoImplEx.class, "leftAxon");
+        rightAxon = myOpMode.hardwareMap.get(ServoImplEx.class, "rightAxon");
         // analog for our axon encoder postions
         leftArm =  myOpMode.hardwareMap.get(AnalogInput.class, "leftArm");
         rightArm =  myOpMode.hardwareMap.get(AnalogInput.class, "rightArm");
@@ -119,8 +119,6 @@ public class  robot {
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-
-//
 
         setMotorPowers(0);
         rightFront.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -198,12 +196,13 @@ public class  robot {
     public void armPID(double target){
         ElapsedTime timer = new ElapsedTime();
         currentPos = (getLeftArmEncoderPosition());
+        double rightPos = getRightArmEncoderPosition();
         LiftUtil.armError = target - currentPos;
         LiftUtil.armIntegralSum += LiftUtil.armError;
-        output = (LiftUtil.armP * LiftUtil.horiSlidesError) + (LiftUtil.armI * LiftUtil.horiSlideintegralSum) + (LiftUtil.horiSlidesA) + LiftUtil.armA;
-        LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
-        leftAxon.setPower(output);
-        rightAxon.setPower(output);
+        output = (LiftUtil.armP * LiftUtil.armError) + (LiftUtil.armI * LiftUtil.armIntegralSum) + (LiftUtil.armA) + LiftUtil.armA;
+        LiftUtil.armLastError = LiftUtil.armError;
+        leftAxon.setPosition(output);
+        rightAxon.setPosition((currentPos-output)+rightPos);
     }
 
 
@@ -234,35 +233,35 @@ public class  robot {
     }
 
     /**
-     Methods: armFoward and armBack
-     to make arm spin foward, Right Axon should be powered negative, left postive. For
-     right vice versa
-     - DONT MAKE THE ARM FOWARD/BACKWARD SPEED MORE THAN 0.25
+    Methods: armFoward and armBack
+    to make arm spin foward, Right Axon should be powered negative, left postive. For
+    right vice versa
+    - DONT MAKE THE ARM FOWARD/BACKWARD SPEED MORE THAN 0.25
      **/
     public void clawSpinClockWise(double power){
-        rightAxon.setPower((-power));
-        leftAxon.setPower((power));
+        rightAxon.setPosition((-power));
+        leftAxon.setPosition((power));
     }
 
     public void clawSpinCounterClockWise(double power){
-        rightAxon.setPower((power));
-        leftAxon.setPower((-power));
+        rightAxon.setPosition((power));
+        leftAxon.setPosition((-power));
     }
 
     /** to make claw spin:
-     (relative to the front)
-     both postive: clockwise
-     both negative: counterclockwise
-     **/
+    (relative to the front)
+    both postive: clockwise
+    both negative: counterclockwise
+      **/
 
     public void armBack (double power){ //claw backword
-        rightAxon.setPower((power));
-        leftAxon.setPower((power));
+        rightAxon.setPosition(-power);
+        leftAxon.setPosition(-power);
     }
 
     public void armFoward (double power){ // clawfoward
-        rightAxon.setPower((-power));
-        leftAxon.setPower((-power));
+        rightAxon.setPosition(power);
+        leftAxon.setPosition(power);
     }
 
     public void setIntake (double power){ // setting power to intake
@@ -278,9 +277,7 @@ public class  robot {
      @return Encoder postion of arm
      **/
     public double getRightArmEncoderPosition(){ return  rightArm.getVoltage() / 3.3 * 360;}
-    public double getLeftArmEncoderPosition(){
-        return  leftArm.getVoltage() / 3.3 * 360;
-    }
+    public double getLeftArmEncoderPosition(){return  leftArm.getVoltage() / 3.3 * 360;}
 
 
 

@@ -136,7 +136,7 @@ public class RedSpicemen extends LinearOpMode {
     }
 
 
-        @Override
+    @Override
     public void runOpMode() {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -59.5, Math.toRadians(90)));
         Claw claw = new Claw(hardwareMap);
@@ -145,34 +145,30 @@ public class RedSpicemen extends LinearOpMode {
         // vision here that outputs position
 
         TrajectoryActionBuilder temp = drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(42, -35))
-                .waitSeconds(0.1)
-                .lineToY(0)
-                .strafeTo(new Vector2d(52, 0))
+                .strafeTo(new Vector2d(51,-5))
                 .setTangent(Math.PI/2)
                 .lineToY(-50)
-                .lineToY(0)
-                .strafeTo(new Vector2d(63, 0))
-                .waitSeconds(0.1)
+                .lineToY(-30)
+                .splineTo(new Vector2d(62, -5),Math.PI/2)
                 .lineToY(-50)
-                .lineToY(0)
-                .strafeTo(new Vector2d(70,0))
+                .lineToY(-30)
+                .splineTo(new Vector2d(69,-5),Math.PI/2)
                 .setTangent(Math.PI/2)
-                .lineToY(-50)
-                .lineToY(0)
-                .lineToY(-57)
+                .lineToY(-50);
+//                .lineToY(0);
+//                .lineToY(-57)
 //                .stopAndAdd(arm.armUp())
 //                .stopAndAdd(arm.armUp())
 //                .stopAndAdd(arm.armUp())
-                .stopAndAdd(claw.closeClaw())
-                .waitSeconds(.5)
+//                .stopAndAdd(claw.closeClaw())
+//                .waitSeconds(.5)
 //                .strafeTo(new Vector2d(0, -30))
 //                .stopAndAdd(arm.armDown())
 //                .stopAndAdd(arm.armDown())
-                .lineToY(-25);
+//                .lineToY(-25);
 
         // actions that need to happen on init; for instance, a claw tightening.
-        Actions.runBlocking(claw.openClaw());
+//        Actions.runBlocking(claw.openClaw());
 
 
         while (!isStopRequested() && !opModeIsActive()) {
