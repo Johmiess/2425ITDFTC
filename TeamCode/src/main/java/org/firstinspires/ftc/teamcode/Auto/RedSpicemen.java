@@ -60,6 +60,7 @@ public class RedSpicemen extends LinearOpMode {
         private CRServoImplEx rightAxon, leftAxon;
         private ElapsedTime time;
 
+
         public Arm(HardwareMap hardwareMap){leftAxon = hardwareMap.get(CRServoImplEx.class, "leftAxon"); rightAxon = hardwareMap.get(CRServoImplEx.class, "rightAxon");time = new ElapsedTime();}
         public class ArmUp implements Action{
             @Override
@@ -89,9 +90,53 @@ public class RedSpicemen extends LinearOpMode {
             }
         }
         public Action armDown() {return new Arm.ArmDown();}
+
+        public Action slidesUp() {return new Arm.ArmUp();}
+
     }
 
-    @Override
+    public class VertSlide {
+        private DcMotorEx leftThing, rightThing;
+        private ElapsedTime time;
+
+        public VertSlide(HardwareMap hardwareMap){leftThing = hardwareMap.get(DcMotorEx.class, "leftThing"); rightThing = hardwareMap.get(DcMotorEx.class, "rightThing");time = new ElapsedTime();}
+        public void verticalSlides(double speed) {
+            leftThing.setPower(-speed);
+            rightThing.setPower(speed);
+        }
+        public class slidesUp implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet){
+                time.reset();
+                while (time.seconds()<.25){
+                    verticalSlides(0.5);
+                }
+                leftThing.setPower(0);
+                rightThing.setPower(0);
+                return false;
+            }
+        }
+
+        public class slideDown implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet){
+                time.reset();
+                while (time.seconds()<.25){
+                   verticalSlides(.5);
+                }
+                leftThing.setPower(0.5);
+                rightThing.setPower(0.5);
+                return false;
+            }
+        }
+
+        public Action slideUp() {return new VertSlide.slidesUp();}
+
+        public Action slideDown() {return new VertSlide.slideDown();  }
+    }
+
+
+        @Override
     public void runOpMode() {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -59.5, Math.toRadians(90)));
         Claw claw = new Claw(hardwareMap);
