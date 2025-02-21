@@ -256,7 +256,7 @@ public class  robot {
         leftAxon.setPower((power));
     }
 
-    public void armFoward (double power){ // clawfoward
+    public void  armFoward (double power){ // clawfoward
         rightAxon.setPower((-power));
         leftAxon.setPower((-power));
     }
