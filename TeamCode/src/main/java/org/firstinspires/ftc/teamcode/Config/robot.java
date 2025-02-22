@@ -65,7 +65,7 @@ public class  robot {
     public OpMode notMyopMode;
     public DcMotorEx leftFront, leftBack, rightFront, rightBack, rightThing, leftThing, intake;
     public ServoImplEx claw;
-    public ServoImplEx rightAxon, leftAxon;
+    public CRServoImplEx rightAxon, leftAxon;
 
     public AnalogInput leftArm, rightArm;
     public  double output;
@@ -93,8 +93,8 @@ public class  robot {
 //        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
         rightThing = myOpMode.hardwareMap.get(DcMotorEx.class, "rightThing");
         leftThing = myOpMode.hardwareMap.get(DcMotorEx.class, "leftThing");
-        leftAxon = myOpMode.hardwareMap.get(ServoImplEx.class, "leftAxon");
-        rightAxon = myOpMode.hardwareMap.get(ServoImplEx.class, "rightAxon");
+        leftAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "leftAxon");
+        rightAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "rightAxon");
         // analog for our axon encoder postions
         leftArm =  myOpMode.hardwareMap.get(AnalogInput.class, "leftArm");
         rightArm =  myOpMode.hardwareMap.get(AnalogInput.class, "rightArm");
@@ -193,17 +193,17 @@ public class  robot {
      * ARM PID BASED OFF OF THE LEFT ARM ENCODER POSITION :)
      * @param target
      */
-    public void armPID(double target){
-        ElapsedTime timer = new ElapsedTime();
-        currentPos = (getLeftArmEncoderPosition());
-        double rightPos = getRightArmEncoderPosition();
-        LiftUtil.armError = target - currentPos;
-        LiftUtil.armIntegralSum += LiftUtil.armError;
-        output = (LiftUtil.armP * LiftUtil.armError) + (LiftUtil.armI * LiftUtil.armIntegralSum) + (LiftUtil.armA) + LiftUtil.armA;
-        LiftUtil.armLastError = LiftUtil.armError;
-        leftAxon.setPosition(output);
-        rightAxon.setPosition((currentPos-output)+rightPos);
-    }
+//    public void armPID(double target){
+//        ElapsedTime timer = new ElapsedTime();
+//        currentPos = (getLeftArmEncoderPosition());
+//        double rightPos = getRightArmEncoderPosition();
+//        LiftUtil.armError = target - currentPos;
+//        LiftUtil.armIntegralSum += LiftUtil.armError;
+//        output = (LiftUtil.armP * LiftUtil.armError) + (LiftUtil.armI * LiftUtil.armIntegralSum) + (LiftUtil.armA) + LiftUtil.armA;
+//        LiftUtil.armLastError = LiftUtil.armError;
+//        leftAxon.setPosition(output);
+//        rightAxon.setPosition((currentPos-output)+rightPos);
+//    }
 
 
 
@@ -239,13 +239,13 @@ public class  robot {
     - DONT MAKE THE ARM FOWARD/BACKWARD SPEED MORE THAN 0.25
      **/
     public void clawSpinClockWise(double power){
-        rightAxon.setPosition((-power));
-        leftAxon.setPosition((power));
+        rightAxon.setPower((-power));
+        leftAxon.setPower((power));
     }
 
     public void clawSpinCounterClockWise(double power){
-        rightAxon.setPosition((power));
-        leftAxon.setPosition((-power));
+        rightAxon.setPower((power));
+        leftAxon.setPower((-power));
     }
 
     /** to make claw spin:
@@ -255,13 +255,13 @@ public class  robot {
       **/
 
     public void armBack (double power){ //claw backword
-        rightAxon.setPosition(-power);
-        leftAxon.setPosition(-power);
+        rightAxon.setPower(-power);
+        leftAxon.setPower(-power);
     }
 
     public void armFoward (double power){ // clawfoward
-        rightAxon.setPosition(power);
-        leftAxon.setPosition(power);
+        rightAxon.setPower(power);
+        leftAxon.setPower(power);
     }
 
     public void setIntake (double power){ // setting power to intake

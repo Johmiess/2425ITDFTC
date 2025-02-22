@@ -84,16 +84,16 @@ public class TeleopPIDMain extends LinearOpMode {
             // dpad controls
 
             if (gamepad2.dpad_up) {
-                robo.armFoward(0.8);
+                robo.armFoward(0.5);
             }
             else if (gamepad2.dpad_down) {
-                robo.armBack(0.8);
+                robo.armBack(0.5);
             } else if(gamepad2.dpad_right){
-                robo.clawSpinClockWise(0.15);
+                robo.clawSpinClockWise(0.1);
             } else if(gamepad2.dpad_left){
-                robo.clawSpinCounterClockWise(0.15);
+                robo.clawSpinCounterClockWise(0.1);
             } else {
-                robo.armBack(0.01);
+                robo.armFoward(0);
             }
 
             telemetry.addData("LF", robo.leftFront.getPower());
