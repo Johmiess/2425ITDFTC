@@ -97,8 +97,8 @@ public class RedSpicemen extends LinearOpMode {
                 while (time.seconds()< iterationTime ){
                    verticalSlides(.5);
                 }
-                leftThing.setPower(0.5);
-                rightThing.setPower(0.5);
+                leftThing.setPower(0);
+                rightThing.setPower(0);
                 return false;
             }
         }
@@ -127,19 +127,15 @@ public class RedSpicemen extends LinearOpMode {
                 .splineTo(new Vector2d(71,-5),Math.PI/2)
                 .setTangent(Math.PI/2)
                 .lineToY(-50)
-//                .lineToY(-45)
                 //grab spec
-//                .splineTo(new Vector2d(10,-30),Math.PI/2)
                 .strafeTo(new Vector2d(10,-30))
                 .stopAndAdd(slide.slideUp())
+                .waitSeconds(.5)
                 .setTangent(-Math.PI/2)
-////                //vert lift, score
-//                .lineToY(-35)
+//                .stopAndAdd(slide.slideDown())
                 .strafeTo(new Vector2d(71,-55))
-////                .splineTo(new Vector2d(71,-55),-Math.PI/2)
-                .lineToY(-50)
+                .waitSeconds(.5)
                 .strafeTo(new Vector2d(5,-30));
-////                .splineTo(new Vector2d(5,-30),Math.PI/2);
 
         TrajectoryActionBuilder score = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(90)))
                 .strafeTo(new Vector2d(1,1));
