@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import android.app.slice.Slice;
+
 import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -25,6 +27,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Config
 @Autonomous(name = "RedSpicemen", group = "Autonomous")
 public class RedSpicemen extends LinearOpMode {
+
+    public static double iterationTime = 0;
+
+    public static double speed = 0;
 
     public class Claw {
         private Servo claw;
@@ -61,16 +67,21 @@ public class RedSpicemen extends LinearOpMode {
         private DcMotorEx leftThing, rightThing;
         private ElapsedTime time;
 
+
         public VertSlide(HardwareMap hardwareMap){leftThing = hardwareMap.get(DcMotorEx.class, "leftThing"); rightThing = hardwareMap.get(DcMotorEx.class, "rightThing");time = new ElapsedTime();}
         public void verticalSlides(double speed) {
             leftThing.setPower(-speed);
-            rightThing.setPower(speed);
+            rightThing.setPower(-speed);
+        }
+        public double vals(){
+            return leftThing.getPower();
         }
         public class slidesUp implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
                 time.reset();
-                while (time.seconds()<.25){
+                iterationTime = .1;
+                while (time.seconds()< iterationTime){
                     verticalSlides(1);
                 }
                 leftThing.setPower(0);
@@ -83,18 +94,18 @@ public class RedSpicemen extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
                 time.reset();
-                while (time.seconds()<.25){
-                   verticalSlides(1);
+                while (time.seconds()< iterationTime ){
+                   verticalSlides(.5);
                 }
-                leftThing.setPower(0.5);
-                rightThing.setPower(0.5);
+                leftThing.setPower(0);
+                rightThing.setPower(0);
                 return false;
             }
         }
 
         public Action slideUp() {return new VertSlide.slidesUp();}
 
-        public Action slideDown() {return new VertSlide.slideDown();  }
+        public Action slideDown() {return new VertSlide.slideDown();}
     }
 
 
@@ -107,8 +118,7 @@ public class RedSpicemen extends LinearOpMode {
         // vision here that outputs position
 
         TrajectoryActionBuilder temp = drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(52,0))
-                .setTangent(Math.PI/2)
+                .splineTo(new Vector2d(52, -5),Math.PI/2)
                 .lineToY(-50)
                 .lineToY(-30)
                 .splineTo(new Vector2d(62, -5),Math.PI/2)
@@ -117,15 +127,15 @@ public class RedSpicemen extends LinearOpMode {
                 .splineTo(new Vector2d(71,-5),Math.PI/2)
                 .setTangent(Math.PI/2)
                 .lineToY(-50)
-                .lineToY(-45)
-                .lineToY(-55)
                 //grab spec
-                .strafeTo(new Vector2d(0,-30))
-                .setTangent(Math.PI/2)
-                .lineToY(-25)
-                //vert lift, score
+                .strafeTo(new Vector2d(10,-30))
                 .stopAndAdd(slide.slideUp())
-                .strafeTo(new Vector2d(71,-55));
+                .waitSeconds(.5)
+                .setTangent(-Math.PI/2)
+//                .stopAndAdd(slide.slideDown())
+                .strafeTo(new Vector2d(71,-55))
+                .waitSeconds(.5)
+                .strafeTo(new Vector2d(5,-30));
 
         TrajectoryActionBuilder score = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(90)))
                 .strafeTo(new Vector2d(1,1));
@@ -135,6 +145,7 @@ public class RedSpicemen extends LinearOpMode {
 
 
         while (!isStopRequested() && !opModeIsActive()) {
+            telemetry.addData("x",slide.vals());
             telemetry.update();
         }
 
@@ -142,7 +153,6 @@ public class RedSpicemen extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-
         Action traj = temp.build();
 
         Actions.runBlocking(
