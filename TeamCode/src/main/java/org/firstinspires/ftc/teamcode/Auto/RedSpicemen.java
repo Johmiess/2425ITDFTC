@@ -102,6 +102,7 @@ public class RedSpicemen extends LinearOpMode {
     public void runOpMode() {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -59.5, Math.toRadians(90)));
         Claw claw = new Claw(hardwareMap);
+        VertSlide slide = new VertSlide(hardwareMap);
 
         // vision here that outputs position
 
@@ -120,8 +121,10 @@ public class RedSpicemen extends LinearOpMode {
                 .lineToY(-55)
                 //grab spec
                 .strafeTo(new Vector2d(0,-30))
-                .lineToY(-20)
+                .setTangent(Math.PI/2)
+                .lineToY(-25)
                 //vert lift, score
+                .stopAndAdd(slide.slideUp())
                 .strafeTo(new Vector2d(71,-55));
 
         TrajectoryActionBuilder score = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(90)))

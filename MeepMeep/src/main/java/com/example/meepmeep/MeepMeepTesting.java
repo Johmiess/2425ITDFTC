@@ -30,14 +30,8 @@ public class MeepMeepTesting {
                 .lineToY(-55)
                 //grab spec
                 .strafeTo(new Vector2d(0,-30))
-                //vert lift, score
-                .strafeTo(new Vector2d(71,-55))
-                //grab spec
-                .strafeTo(new Vector2d(0,-30))
-                //vert lift, score
-                .strafeTo(new Vector2d(71,-55))
-                //grab spec
-                .strafeTo(new Vector2d(0,-30))
+                .setTangent(Math.PI/2)
+                .lineToY(-20)
                 //vert lift, score
                 .strafeTo(new Vector2d(71,-55))
                 .build());
