@@ -47,7 +47,7 @@ public class TeleopPIDMain extends LinearOpMode {
                 robo.claw(0);
             }
 
-            if (gamepad1.right_trigger > 0.2) {
+            if (gamepad2.right_trigger > 0.2) {
                 robo.setMotorPowers(lf * 0.2, lb * 0.2, rf * 0.2, rb * 0.2);
             } else {
                 robo.setMotorPowers(lf, lb, rf, rb);
@@ -73,9 +73,9 @@ public class TeleopPIDMain extends LinearOpMode {
             }
 
             if (gamepad1.a) {
-                robo.verticalSlides(0.75);
+                robo.verticalSlides(1);
             } else if (gamepad1.b) {
-                robo.verticalSlides(-0.75);
+                robo.verticalSlides(-1);
             } else {
                 robo.verticalSlides(0);
             }

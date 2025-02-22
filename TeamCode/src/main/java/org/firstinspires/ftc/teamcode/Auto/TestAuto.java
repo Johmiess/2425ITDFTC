@@ -56,44 +56,6 @@ public class TestAuto extends LinearOpMode {
         }
     }
 
-    public class Arm{
-        private CRServoImplEx rightAxon, leftAxon;
-        private ElapsedTime time;
-
-
-        public Arm(HardwareMap hardwareMap){leftAxon = hardwareMap.get(CRServoImplEx.class, "leftAxon"); rightAxon = hardwareMap.get(CRServoImplEx.class, "rightAxon");time = new ElapsedTime();}
-        public class ArmUp implements Action{
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet){
-                time.reset();
-                while (time.seconds()<.3){
-                    rightAxon.setPower(1);
-                    leftAxon.setPower(1);
-                }
-                rightAxon.setPower(0);
-                leftAxon.setPower(0);
-                return false;
-            }
-        }
-        public Action armUp() {return new Arm.ArmUp();}
-        public class ArmDown implements Action{
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet){
-                time.reset();
-                while (time.seconds()<.25){
-                    rightAxon.setPower(-1);
-                    leftAxon.setPower(-1);
-                }
-                rightAxon.setPower(0);
-                leftAxon.setPower(0);
-                return false;
-            }
-        }
-        public Action armDown() {return new Arm.ArmDown();}
-
-        public Action slidesUp() {return new Arm.ArmUp();}
-
-    }
 
     public class VertSlide {
         private DcMotorEx leftThing, rightThing;
@@ -109,7 +71,7 @@ public class TestAuto extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet){
                 time.reset();
                 while (time.seconds()<.25){
-                    verticalSlides(0.5);
+                    verticalSlides(-0.5);
                 }
                 leftThing.setPower(0);
                 rightThing.setPower(0);
@@ -140,7 +102,6 @@ public class TestAuto extends LinearOpMode {
     public void runOpMode() {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -59.5, Math.toRadians(90)));
         Claw claw = new Claw(hardwareMap);
-        Arm arm = new Arm(hardwareMap);
         VertSlide vertSlide = new VertSlide(hardwareMap);
 
         // vision here that outputs position
