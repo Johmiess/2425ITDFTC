@@ -222,12 +222,12 @@ public class  robot {
      */
 
     //positive speed = up, negative speed = down
-    public void verticalSlides(double speed) {
+    public void horizontalSlides(double speed) {
         leftThing.setPower(-speed);
         rightThing.setPower(speed);
     }
 
-    public void horizontalSlides(double speed){
+    public void verticalSlides(double speed){
         leftThing.setPower(speed);
         rightThing.setPower(speed);
     }

@@ -54,7 +54,7 @@ public class TeleopPIDMain extends LinearOpMode {
             }
 
             if(gamepad1.left_trigger > 0.2){
-                robo.setIntake(gamepad1.left_trigger);
+                robo.setIntake(1);
             } else if(gamepad1.left_bumper){
                 robo.setIntake(-1);
             } else {
@@ -64,18 +64,20 @@ public class TeleopPIDMain extends LinearOpMode {
             // x,y,a,b
 
             if (gamepad2.a) {
-                robo.horizontalSlides(0.75);
+
+                robo.verticalSlides(1);
             }
             else if (gamepad2.y){
-                robo.horizontalSlides(-0.75);
+
+                robo.verticalSlides(-1);
             } else {
                 robo.horizontalSlides(0);
             }
 
             if (gamepad1.a) {
-                robo.verticalSlides(1);
+                robo.horizontalSlides(0.75);
             } else if (gamepad1.b) {
-                robo.verticalSlides(-1);
+                robo.horizontalSlides(-0.75);
             } else {
                 robo.verticalSlides(0);
             }
