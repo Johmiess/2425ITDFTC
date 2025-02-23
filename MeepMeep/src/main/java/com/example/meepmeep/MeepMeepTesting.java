@@ -15,26 +15,8 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(12, -59.5, Math.toRadians(90)))
-                .splineTo(new Vector2d(52, -5),Math.PI/2)
-                .lineToY(-50)
-                .lineToY(-30)
-                .splineTo(new Vector2d(62, -5),Math.PI/2)
-                .lineToY(-50)
-                .lineToY(-30)
-                .splineTo(new Vector2d(71,-5),Math.PI/2)
-                .setTangent(Math.PI/2)
-                .lineToY(-50)
-                .lineToY(-45)
-                //grab spec
-                .splineTo(new Vector2d(10,-30),Math.PI/2)
-                .setTangent(-Math.PI/2)
-                //vert lift, score
-                .lineToY(-35)
-                .strafeTo(new Vector2d(71,-55))
-//                .splineTo(new Vector2d(71,-55),-Math.PI/2)
-                .lineToY(-50)
-                .strafeTo(new Vector2d(5,-30))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-24, -59.5, Math.toRadians(90)))
+                .strafeTo(new Vector2d(-60,-60))
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)

@@ -42,7 +42,7 @@ public class TeleopPIDMain extends LinearOpMode {
             //bumper & trigger controls
 
             if (gamepad2.right_bumper) {
-                robo.claw(1);
+                robo.claw(0.435 );
             } else {
                 robo.claw(0);
             }
@@ -63,11 +63,11 @@ public class TeleopPIDMain extends LinearOpMode {
 
             // x,y,a,b
 
-            if (gamepad2.a) {
+            if (gamepad1.dpad_down) {
 
                 robo.verticalSlides(1);
             }
-            else if (gamepad2.y){
+            else if (gamepad1.dpad_up){
 
                 robo.verticalSlides(-1);
             } else {

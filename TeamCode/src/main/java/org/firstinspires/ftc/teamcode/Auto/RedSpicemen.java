@@ -32,36 +32,6 @@ public class RedSpicemen extends LinearOpMode {
 
     public static double speed = 0;
 
-    public class Claw {
-        private Servo claw;
-
-        public Claw(HardwareMap hardwareMap) {
-            claw = hardwareMap.get(Servo.class, "claw");
-        }
-
-        public class CloseClaw implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                claw.setPosition(0.55);
-                return false;
-            }
-        }
-        public Action closeClaw() {
-            return new CloseClaw();
-        }
-
-        public class OpenClaw implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                claw.setPosition(0);
-                return false;
-            }
-        }
-        public Action openClaw() {
-            return new OpenClaw();
-        }
-    }
-
 
     public class VertSlide {
         private DcMotorEx leftThing, rightThing;
@@ -109,10 +79,11 @@ public class RedSpicemen extends LinearOpMode {
     }
 
 
+
+
     @Override
     public void runOpMode() {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -59.5, Math.toRadians(90)));
-        Claw claw = new Claw(hardwareMap);
         VertSlide slide = new VertSlide(hardwareMap);
 
         // vision here that outputs position
@@ -129,13 +100,18 @@ public class RedSpicemen extends LinearOpMode {
                 .lineToY(-50)
                 //grab spec
                 .strafeTo(new Vector2d(10,-30))
-                .stopAndAdd(slide.slideUp())
+//                .stopAndAdd(slide.slideUp())
+                .waitSeconds(.5)
+                .setTangent(-Math.PI/2)
+                .strafeTo(new Vector2d(65,-55))
+                .waitSeconds(.5)
+                .strafeTo(new Vector2d(5,-30))
                 .waitSeconds(.5)
                 .setTangent(-Math.PI/2)
 //                .stopAndAdd(slide.slideDown())
-                .strafeTo(new Vector2d(71,-55))
+                .strafeTo(new Vector2d(65,-55))
                 .waitSeconds(.5)
-                .strafeTo(new Vector2d(5,-30));
+                .strafeTo(new Vector2d(0,-30));
 
         TrajectoryActionBuilder score = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(90)))
                 .strafeTo(new Vector2d(1,1));
