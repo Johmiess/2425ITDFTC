@@ -36,77 +36,6 @@ public class RedSpicemen extends LinearOpMode {
 
     public static double speed = 0;
 
-    public class Arm{
-        private CRServoImplEx rightAxon, leftAxon;
-        private ElapsedTime time;
-
-
-        public Arm(HardwareMap hardwareMap){leftAxon = hardwareMap.get(CRServoImplEx.class, "leftAxon"); rightAxon = hardwareMap.get(CRServoImplEx.class, "rightAxon");time = new ElapsedTime();}
-        public class ArmUp implements Action{
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet){
-                time.reset();
-                while (time.seconds()<armiterationTime){
-                    rightAxon.setPower(1);
-                    leftAxon.setPower(1);
-                }
-                rightAxon.setPower(0);
-                leftAxon.setPower(0);
-                return false;
-            }
-        }
-        public Action armUp() {return new Arm.ArmUp();}
-        public class ArmDown implements Action{
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet){
-                time.reset();
-                while (time.seconds()<armiterationTime - 0.5){
-                    rightAxon.setPower(-1);
-                    leftAxon.setPower(-1);
-                }
-                rightAxon.setPower(0);
-                leftAxon.setPower(0);
-                return false;
-            }
-        }
-
-        public class armClockSpin implements Action{
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet){
-                time.reset();
-                while (time.seconds()<clawiterationTime){
-                    rightAxon.setPower(-.25);
-                    leftAxon.setPower(.25);
-                }
-                rightAxon.setPower(0);
-                leftAxon.setPower(0);
-                return false;
-            }
-        }
-
-        public class armCounterClockSpin implements Action{
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet){
-                time.reset();
-                while (time.seconds()<clawiterationTime){
-                    rightAxon.setPower(-.25);
-                    leftAxon.setPower(.25);
-                }
-                rightAxon.setPower(0);
-                leftAxon.setPower(0);
-                return false;
-            }
-        }
-        public Action armDown() {return new Arm.ArmDown();}
-
-        public Action slidesUp() {return new Arm.ArmUp();}
-
-        public Action armClockSpin() {return new Arm.armClockSpin();}
-
-        public Action armCounterClockSpin() {return new Arm.armCounterClockSpin();}
-
-
-    }
 
     public class VertSlide {
         private DcMotorEx leftThing, rightThing;
@@ -140,7 +69,7 @@ public class RedSpicemen extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet){
                 time.reset();
                 while (time.seconds()< iterationTime ){
-                   verticalSlides(-.5);
+                   verticalSlides(.5);
                 }
                 leftThing.setPower(0);
                 rightThing.setPower(0);
@@ -153,6 +82,63 @@ public class RedSpicemen extends LinearOpMode {
         public Action slideDown() {return new VertSlide.slideDown();}
     }
 
+    public class Arm{
+        private CRServoImplEx leftAxon, rightAxon;
+        private ServoImplEx rotate;
+        private ElapsedTime time;
+
+        public Arm(HardwareMap hardwareMap){
+            leftAxon = hardwareMap.get(CRServoImplEx.class,"leftAxon");
+            rightAxon = hardwareMap.get(CRServoImplEx.class, "rightAxon");
+            rotate = hardwareMap.get(ServoImplEx.class,"rotate");
+        }
+        public class clockwise implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                rotate.setPosition(.92);
+                return false;
+            }
+        }
+        public class counterclockwise implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                rotate.setPosition(.35);
+                return false;
+            }
+        }
+        public class armUp implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                time.reset();
+                while (time.seconds() < .8) {
+                    leftAxon.setPower(1);
+                    rightAxon.setPower(1);
+                }
+                leftAxon.setPower(0);
+                rightAxon.setPower(0);
+                return false;
+            }
+        }
+        public class armDown implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                time.reset();
+                while (time.seconds() < .8) {
+                    leftAxon.setPower(-1);
+                    rightAxon.setPower(-1);
+                }
+                leftAxon.setPower(0);
+                rightAxon.setPower(0);
+                return false;
+            }
+        }
+        public Action armUp(){return new Arm.armUp();}
+        public Action armDown(){return new Arm.armDown();}
+        public Action clockwise(){return new Arm.clockwise();}
+        public Action counterclockwise(){return new Arm.counterclockwise();}
+
+    }
+
 
 
 
@@ -161,7 +147,6 @@ public class RedSpicemen extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -59.5, Math.toRadians(90)));
         VertSlide slide = new VertSlide(hardwareMap);
         Arm arm = new Arm(hardwareMap);
-
 
         // vision here that outputs position
 
@@ -194,13 +179,15 @@ public class RedSpicemen extends LinearOpMode {
 //                .waitSeconds(.5)
 //                .afterDisp(50, slide.slideUp() )
 //                .strafeTo(new Vector2d(0,-30))
-                .stopAndAdd(arm.armClockSpin())
                 .stopAndAdd(arm.armUp());
 
 
 
         TrajectoryActionBuilder score = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(90)))
-                .strafeTo(new Vector2d(1,1));
+                .strafeTo(new Vector2d(1,1))
+                .stopAndAdd(arm.counterclockwise())
+                .stopAndAdd(arm.clockwise())
+                .lineToY(-30);
 
         // actions that need to happen on init; for instance, a claw tightening.
 //        Actions.runBlocking(claw.openClaw());
