@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Autonomous(name = "RedObservation", group = "Autonomous")
 public class RedObservation extends LinearOpMode {
+
     @Override
     public void runOpMode() {
         Pose2d initialPose = new Pose2d(24, -60, Math.toRadians(90));
