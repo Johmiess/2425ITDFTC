@@ -60,7 +60,7 @@ public class RedSpicemen extends LinearOpMode {
             }
         }
         public Action closeClaw() {
-            return new CloseClaw();
+            return new Claw.CloseClaw();
         }
 
         public class OpenClaw implements Action {
@@ -71,7 +71,7 @@ public class RedSpicemen extends LinearOpMode {
             }
         }
         public Action openClaw() {
-            return new OpenClaw();
+            return new Claw.OpenClaw();
         }
     }
     public class VertSlide {
@@ -232,7 +232,6 @@ public class RedSpicemen extends LinearOpMode {
 //                .afterDisp(50, slide.slideUp() )
 //                .strafeTo(new Vector2d(0,-30))
 //                .stopAndAdd(arm.armUp());
-
                   .stopAndAdd(arm.armPreScoring())
                   .stopAndAdd(slide.slideUp())
                   .waitSeconds(.5)
@@ -254,7 +253,9 @@ public class RedSpicemen extends LinearOpMode {
                 .lineToY(-30);
 
         // actions that need to happen on init; for instance, a claw tightening.
+        Actions.runBlocking(arm.clockwise());
         Actions.runBlocking(claw.closeClaw());
+
 
 
 
