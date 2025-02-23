@@ -99,8 +99,6 @@ public class TeleopPIDMain extends LinearOpMode {
                 robo.rotateClaw(.35);
             } else if(gamepad2.dpad_left){
                 robo.rotateClaw(.92);
-            } else {
-                robo.armFoward(0);
             }
 
             telemetry.addData("LF", robo.leftFront.getPower());
@@ -109,8 +107,6 @@ public class TeleopPIDMain extends LinearOpMode {
             telemetry.addData("RF", robo.rightFront.getPower());
             telemetry.addData("JST LEFT", robo.getRightArmEncoderPosition());
             telemetry.addData("JST RIGHT", robo.getLeftArmEncoderPosition());
-            telemetry.addData("leftpower", robo.leftAxon.getPower());
-            telemetry.addData("rightpower", robo.rightAxon.getPower());
 
             telemetry.update();
 

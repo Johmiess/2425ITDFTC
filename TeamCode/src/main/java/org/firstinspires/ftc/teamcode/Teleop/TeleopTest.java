@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode.Teleop;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.Config.robot;
 
@@ -18,21 +20,29 @@ public class TeleopTest extends LinearOpMode {
      */
 //    robot robo;
 
-    private DcMotor horiShift = null;
-    private DcMotor intake = null;
-    public static double intakeSpool = 0.4;
-    public static double scoringSpool = 1;
+    public ServoImplEx rightAxon, leftAxon;
+
+    public static double rightPos = 1;
+    public static double leftPos = 1;
+
+    public static double rightPos2 = 0;
+    public static double leftPos2 = 0;
+
+    /**
+     * // 0.05 init
+     * // 0.25 post-scoring
+     * // 0.45 90 degrees
+     * // 0.85 flat
+     * **/
 
     @Override
     public void runOpMode() {
 //        robo = new robot(this);
 //        robo.init();
 
-        horiShift = hardwareMap.get(DcMotorEx.class, "horiShift");
-        intake = hardwareMap.get(DcMotorEx.class, "intake");
+        leftAxon = hardwareMap.get(ServoImplEx.class, "leftAxon");
+        rightAxon = hardwareMap.get(ServoImplEx.class, "rightAxon");
 
-        horiShift.setDirection(DcMotorSimple.Direction.FORWARD);
-        intake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         while (opModeInInit()) {
             telemetry.addLine("starting");
@@ -43,50 +53,25 @@ public class TeleopTest extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
-//            double y = -gamepad1.left_stick_y;
-//            double x = gamepad1.left_stick_x;
-//            double rx = gamepad1.right_stick_x;
-//
-//            robo.leftFront.setPower(y + x + rx);
-//            robo.leftBack.setPower(y - x + rx);
-//            robo.rightFront.setPower(y - x - rx);
-//            robo.rightBack.setPower(y + x - rx);
 
-//
-//            if (gamepad1.y) {
-//                robo.armFoward(0.15);
-//            }
-//            else if (gamepad1.a) {
-//                robo.armBack(0.15);
-//            } else if(gamepad1.b){
-//                robo.clawSpinClockWise(0.5);
-//            } else if(gamepad1.x){
-//                robo.clawSpinCounterClockWise(0.5);
-//            } else {
-//                // set power to zero to keep still
-//                robo.armFoward(0);
-//            }
-//
-
-
-            if (gamepad1.dpad_up) {
-                intake.setPower(0.5);
-                horiShift.setPower(0.5);
-            } else if (gamepad1.dpad_down) {
-                horiShift.setPower(-0.5);
-                intake.setPower(-0.5);
-            } else if (gamepad1.dpad_right) {
-                intake.setPower(0.5);
-                horiShift.setPower(-0.5);
-            } else if (gamepad1.dpad_left) {
-                intake.setPower(-0.5);
-                horiShift.setPower(0.5);
+            if(gamepad1.dpad_up){
+                rightAxon.setPosition(rightPos);
+                leftAxon.setPosition(leftPos);
+            } else if(gamepad1.dpad_down){
+                rightAxon.setPosition(rightPos2);
+                leftAxon.setPosition(leftPos2);
+            } else if(gamepad1.dpad_right){
+                rightAxon.setPosition(0.5);
+                leftAxon.setPosition(0.5);
             }
+
+
+
 
 //            telemetry.addData("RIGHTARM", robo.getRightArmEncoderPosition());
 //            telemetry.addData("LEFTARM", robo.getLeftArmEncoderPosition());
-            telemetry.addData("HORISHIFT", intake.getPower());
-            telemetry.addData("INTAKE", horiShift.getPower());
+            telemetry.addData("leftAxon",leftAxon.getPosition());
+            telemetry.addData("RightAxon", rightAxon.getPosition());
             telemetry.update();
 
         }

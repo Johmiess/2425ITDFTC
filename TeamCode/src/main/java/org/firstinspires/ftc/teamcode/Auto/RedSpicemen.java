@@ -11,7 +11,6 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
@@ -24,7 +23,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name = "RedSpicemen", group = "Autonomous")
 public class RedSpicemen extends LinearOpMode {
 
-    public static double iterationTime = 0;
+
+    public static double iterationTime = .1;
 
     public static double clawiterationTime = .355;
 
@@ -35,10 +35,15 @@ public class RedSpicemen extends LinearOpMode {
 
     public static double clawOpenPos = 0;
 
-
-
-
     public static double speed = 0;
+
+    /**
+     * // 0.05 init
+     * // 0.25 post-scoring
+     * // 0.45 90 degrees
+     * // 0.85 flat
+     * **/
+
 
     public class Claw {
         private Servo claw;
@@ -86,7 +91,6 @@ public class RedSpicemen extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
                 time.reset();
-                iterationTime = .1;
                 while (time.seconds()< iterationTime){
                     verticalSlides(1);
                 }
@@ -115,13 +119,13 @@ public class RedSpicemen extends LinearOpMode {
     }
 
     public class Arm{
-        private CRServoImplEx leftAxon, rightAxon;
+        private ServoImplEx leftAxon, rightAxon;
         private ServoImplEx rotate;
         private ElapsedTime time;
 
         public Arm(HardwareMap hardwareMap){
-            leftAxon = hardwareMap.get(CRServoImplEx.class,"leftAxon");
-            rightAxon = hardwareMap.get(CRServoImplEx.class, "rightAxon");
+            leftAxon = hardwareMap.get(ServoImplEx.class,"leftAxon");
+            rightAxon = hardwareMap.get(ServoImplEx.class, "rightAxon");
             rotate = hardwareMap.get(ServoImplEx.class,"rotate");
         }
         public class clockwise implements Action{
@@ -139,50 +143,47 @@ public class RedSpicemen extends LinearOpMode {
             }
         }
 
-        public class armInitToScoring implements Action{
+        public class armInit implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                time.reset();
-                while (time.seconds() < initToScoringTime) {
-                    leftAxon.setPower(1);
-                    rightAxon.setPower(1);
-                }
-                leftAxon.setPower(0);
-                rightAxon.setPower(0);
+                leftAxon.setPosition(0.05);
+                rightAxon.setPosition(0.05);
                 return false;
             }
         }
 
-        public class armPickUpToScoring implements Action{
+        public class armPostScoring implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                time.reset();
-                while (time.seconds() < pickUpToScoringTime) {
-                    leftAxon.setPower(1);
-                    rightAxon.setPower(1);
-                }
-                leftAxon.setPower(0);
-                rightAxon.setPower(0);
+                leftAxon.setPosition(0.25 );
+                rightAxon.setPosition(0.25 );
                 return false;
             }
         }
-        public class armScoringToPickUp implements Action{
+        public class armPreScoring implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                time.reset();
-                while (time.seconds() < ScoringToPickUpTime) {
-                    leftAxon.setPower(-1);
-                    rightAxon.setPower(-1);
-                }
-                leftAxon.setPower(0);
-                rightAxon.setPower(0);
+                leftAxon.setPosition(0.45);
+                rightAxon.setPosition(0.45);
                 return false;
             }
         }
-        public Action armInitToScoring(){return new armInitToScoring();}
 
-        public Action armPickUpToScoring(){return new armPickUpToScoring();}
-        public Action armScoringToPickUp(){return new armScoringToPickUp();}
+        public class armPickUp implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                leftAxon.setPosition(0.45);
+                rightAxon.setPosition(0.45);
+                return false;
+            }
+        }
+        public Action armInit(){return new armInit();}
+
+        public Action armPickUp(){return new armPickUp();}
+        public Action armPreScoring(){return new armPreScoring();}
+
+        public Action armPostScoring(){return new armPostScoring();}
+
         public Action clockwise(){return new Arm.clockwise();}
         public Action counterclockwise(){return new Arm.counterclockwise();}
 
@@ -231,9 +232,18 @@ public class RedSpicemen extends LinearOpMode {
 //                .afterDisp(50, slide.slideUp() )
 //                .strafeTo(new Vector2d(0,-30))
 //                .stopAndAdd(arm.armUp());
-                .stopAndAdd(arm.armInitToScoring())
-                .stopAndAdd(arm.armScoringToPickUp())
-                .stopAndAdd(arm.armPickUpToScoring());
+
+                  .stopAndAdd(arm.armPreScoring())
+                  .stopAndAdd(slide.slideUp())
+                  .waitSeconds(.5)
+                  .stopAndAdd(arm.armPostScoring())
+                  .waitSeconds(2);
+
+
+
+
+
+
 
 
 
@@ -245,7 +255,6 @@ public class RedSpicemen extends LinearOpMode {
 
         // actions that need to happen on init; for instance, a claw tightening.
         Actions.runBlocking(claw.closeClaw());
-        Actions.runBlocking(arm.clockwise());
 
 
 
