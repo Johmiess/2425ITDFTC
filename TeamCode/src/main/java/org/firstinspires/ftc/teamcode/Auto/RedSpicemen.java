@@ -155,8 +155,8 @@ public class RedSpicemen extends LinearOpMode {
         public class armPostScoring implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                leftAxon.setPosition(0.3 );
-                rightAxon.setPosition(0.3 );
+                leftAxon.setPosition(0.20 );
+                rightAxon.setPosition(0.20 );
                 return false;
             }
         }
@@ -202,19 +202,21 @@ public class RedSpicemen extends LinearOpMode {
         // vision here that outputs position
 
         TrajectoryActionBuilder temp = drive.actionBuilder(drive.pose)
-                .afterDisp(50, slide.slideUp() )
-//                .stopAndAdd(arm.armPostScoring())
-//                .afterDisp(60, arm.arm() )
                 .stopAndAdd(arm.armPreScoring())
-                .strafeTo(new Vector2d(10,-27))
-//                .stopAndAdd(arm.armPostScoring())
-                .waitSeconds(.5)
+                .strafeTo(new Vector2d(10,-24))
+                .stopAndAdd(slide.slideUp())
+                .waitSeconds(1)
+                .stopAndAdd(arm.armPostScoring())
+                .waitSeconds(1)
                 .stopAndAdd(claw.openClaw())
+                .waitSeconds(1)
                 .stopAndAdd(arm.armPickUp())
                 .waitSeconds(.5)
                 .setTangent(-Math.PI/2)
                 .afterDisp(50, slide.slideDown())
-                .strafeTo(new Vector2d(24,-59.5))
+                .strafeTo(new Vector2d(24,-58))
+                .setTangent(-Math.PI/2)
+                .lineToY(-58)
                 .splineTo(new Vector2d(52, 0),Math.PI/2)
                 .lineToY(-50)
                 .lineToY(-30)
@@ -225,28 +227,22 @@ public class RedSpicemen extends LinearOpMode {
                 .setTangent(Math.PI/2)
                 .lineToY(-50)
                 //grab spec
-                .strafeTo(new Vector2d(65,-54))
-                .waitSeconds(0.45)
+//                .strafeTo(new Vector2d(65,-54))
+                .waitSeconds(1)
                 .stopAndAdd(claw.closeClaw())
                 .stopAndAdd(arm.armPreScoring())
+                .afterDisp(50, slide.slideUp() )
+                .strafeTo(new Vector2d(7,-27))
 //                .stopAndAdd(arm.armPostScoring())
                 .stopAndAdd(claw.openClaw())
-                .stopAndAdd(arm.armPickUp())
-                .afterDisp(50, slide.slideUp() )
-                .strafeTo(new Vector2d(5,-27))
-                .stopAndAdd(arm.armPreScoring())
                 .waitSeconds(.5)
-                .setTangent(-Math.PI/2)
-//                .stopAndAdd(slide.slideDown())
+                .stopAndAdd(arm.armPickUp())
                 .afterDisp(50, slide.slideDown() )
                 .strafeTo(new Vector2d(65,-54))
-                .stopAndAdd(arm.armPickUp())
-                .waitSeconds(0.45)
+                .waitSeconds(1)
                 .stopAndAdd(claw.closeClaw())
                 .stopAndAdd(arm.armPreScoring())
 //                .stopAndAdd(arm.armPostScoring())
-                .stopAndAdd(claw.openClaw())
-                .stopAndAdd(arm.armPickUp())
                 .afterDisp(50, slide.slideUp() )
                 .strafeTo(new Vector2d(2,-27))
                 .stopAndAdd(arm.armPreScoring());
@@ -270,6 +266,10 @@ public class RedSpicemen extends LinearOpMode {
         Actions.runBlocking(claw.openClaw());
         Actions.runBlocking(arm.clockwise());
         Actions.runBlocking(arm.armInit());
+        ElapsedTime time = new ElapsedTime();
+        while (time.seconds()<2){
+            telemetry.addData("doing","nothing");
+        }
         Actions.runBlocking(claw.closeClaw());
 
 

@@ -265,9 +265,6 @@ public class  robot {
     }
 
 
-
-
-
     /**
      getRightArmEncoderPosition & getleftArmEncoderPosition
      @return Encoder postion of arm
