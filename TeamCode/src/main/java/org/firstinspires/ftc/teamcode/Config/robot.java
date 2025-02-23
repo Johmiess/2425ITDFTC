@@ -65,7 +65,7 @@ public class  robot {
     public OpMode notMyopMode;
     public DcMotorEx leftFront, leftBack, rightFront, rightBack, rightThing, leftThing, intake;
     public ServoImplEx claw,rotate;
-    public CRServoImplEx rightAxon, leftAxon;
+    public ServoImplEx rightAxon, leftAxon;
 
     public AnalogInput leftArm, rightArm;
     public  double output;
@@ -93,8 +93,8 @@ public class  robot {
 //        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
         rightThing = myOpMode.hardwareMap.get(DcMotorEx.class, "rightThing");
         leftThing = myOpMode.hardwareMap.get(DcMotorEx.class, "leftThing");
-        leftAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "leftAxon");
-        rightAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "rightAxon");
+        leftAxon = myOpMode.hardwareMap.get(ServoImplEx.class, "leftAxon");
+        rightAxon = myOpMode.hardwareMap.get(ServoImplEx.class, "rightAxon");
         rotate = myOpMode.hardwareMap.get(ServoImplEx.class,"rotate");
         // analog for our axon encoder postions
         leftArm =  myOpMode.hardwareMap.get(AnalogInput.class, "leftArm");
@@ -251,13 +251,13 @@ public class  robot {
       **/
 
     public void armBack (double power){ //claw backword
-        rightAxon.setPower(-power);
-        leftAxon.setPower(-power);
+        rightAxon.setPosition(-rightAxon.getPosition()+.01);
+        leftAxon.setPosition(-leftAxon.getPosition()+.01);
     }
 
     public void armFoward (double power){ // clawfoward
-        rightAxon.setPower(power);
-        leftAxon.setPower(power);
+        rightAxon.setPosition(rightAxon.getPosition()+.01);
+        leftAxon.setPosition(leftAxon.getPosition()+.01);
     }
 
     public void setIntake (double power){ // setting power to intake
