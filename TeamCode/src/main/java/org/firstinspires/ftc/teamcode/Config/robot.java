@@ -254,14 +254,18 @@ public class  robot {
     both negative: counterclockwise
       **/
 
-    public void armBack (double power){ //claw backword
-        rightAxon.setPower(-power);
+    public void armBack (double power, double right){ //claw backword
+        rightAxon.setPower(-power+right);
         leftAxon.setPower(-power);
     }
 
-    public void armFoward (double power){ // clawfoward
-        rightAxon.setPower(power);
+    public void armFoward (double power, double right){ // clawfoward
+        rightAxon.setPower(power-right);
         leftAxon.setPower(power);
+    }
+    public void stop(){
+        rightAxon.setPower(0);
+        leftAxon.setPower(0);
     }
 
     public void setIntake (double power){ // setting power to intake

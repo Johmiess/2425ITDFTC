@@ -14,6 +14,7 @@ public class TeleopPIDMain extends LinearOpMode {
     double x, y, rx, lf, lb, rf, rb, denominator = 0;
 
     public static double power = 0.75;
+    public static double right =.1;
 
     @Override
     public void runOpMode() {
@@ -86,15 +87,15 @@ public class TeleopPIDMain extends LinearOpMode {
             // dpad controls
 
             if (gamepad2.dpad_up) {
-                robo.armFoward(0.5);
+                robo.armFoward(0.5,right);
             } else if (gamepad2.dpad_down) {
-                robo.armBack(0.5);
+                robo.armBack(0.5,right);
             } else if(gamepad2.dpad_right){
                 robo.clawSpinClockWise(0.3);
             } else if(gamepad2.dpad_left){
                 robo.clawSpinCounterClockWise(0.3);
             } else {
-                robo.armFoward(0);
+                robo.stop();
             }
 
             telemetry.addData("LF", robo.leftFront.getPower());

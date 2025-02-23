@@ -32,6 +32,35 @@ public class RedSpicemen extends LinearOpMode {
 
     public static double speed = 0;
 
+    public class Claw {
+        private Servo claw;
+
+        public Claw(HardwareMap hardwareMap) {
+            claw = hardwareMap.get(Servo.class, "claw");
+        }
+
+        public class CloseClaw implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                claw.setPosition(0.55);
+                return false;
+            }
+        }
+        public Action closeClaw() {
+            return new CloseClaw();
+        }
+
+        public class OpenClaw implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                claw.setPosition(0);
+                return false;
+            }
+        }
+        public Action openClaw() {
+            return new OpenClaw();
+        }
+    }
 
     public class VertSlide {
         private DcMotorEx leftThing, rightThing;
@@ -78,6 +107,16 @@ public class RedSpicemen extends LinearOpMode {
         public Action slideDown() {return new VertSlide.slideDown();}
     }
 
+    public class Arm{
+        private CRServoImplEx leftThing, rightThing;
+
+        public Arm(HardwareMap hardwareMap){
+            leftThing = hardwareMap.get(CRServoImplEx.class,"leftThing");
+            rightThing = hardwareMap.get(CRServoImplEx.class, "rightThing");
+        }
+        
+    }
+
 
 
 
@@ -85,6 +124,7 @@ public class RedSpicemen extends LinearOpMode {
     public void runOpMode() {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -59.5, Math.toRadians(90)));
         VertSlide slide = new VertSlide(hardwareMap);
+        Arm arm = new Arm(hardwareMap);
 
         // vision here that outputs position
 
