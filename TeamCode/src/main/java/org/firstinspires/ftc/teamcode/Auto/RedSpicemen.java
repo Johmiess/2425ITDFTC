@@ -24,7 +24,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class RedSpicemen extends LinearOpMode {
 
 
-    public static double iterationTime = .1;
+    public static double iterationTime = .23;
 
     public static double clawiterationTime = .355;
 
@@ -105,7 +105,7 @@ public class RedSpicemen extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet){
                 time.reset();
                 while (time.seconds()< iterationTime ){
-                   verticalSlides(.5);
+                   verticalSlides(-.5);
                 }
                 leftThing.setPower(0);
                 rightThing.setPower(0);
@@ -146,8 +146,8 @@ public class RedSpicemen extends LinearOpMode {
         public class armInit implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                leftAxon.setPosition(0.05);
-                rightAxon.setPosition(0.05);
+                leftAxon.setPosition(0.00);
+                rightAxon.setPosition(0.00);
                 return false;
             }
         }
@@ -155,16 +155,16 @@ public class RedSpicemen extends LinearOpMode {
         public class armPostScoring implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                leftAxon.setPosition(0.25 );
-                rightAxon.setPosition(0.25 );
+                leftAxon.setPosition(0.3 );
+                rightAxon.setPosition(0.3 );
                 return false;
             }
         }
         public class armPreScoring implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                leftAxon.setPosition(0.45);
-                rightAxon.setPosition(0.45);
+                leftAxon.setPosition(0.5);
+                rightAxon.setPosition(0.5);
                 return false;
             }
         }
@@ -172,8 +172,8 @@ public class RedSpicemen extends LinearOpMode {
         public class armPickUp implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                leftAxon.setPosition(0.45);
-                rightAxon.setPosition(0.45);
+                leftAxon.setPosition(0.9);
+                rightAxon.setPosition(0.9);
                 return false;
             }
         }
@@ -202,41 +202,55 @@ public class RedSpicemen extends LinearOpMode {
         // vision here that outputs position
 
         TrajectoryActionBuilder temp = drive.actionBuilder(drive.pose)
-//                .splineTo(new Vector2d(52, -5),Math.PI/2)
-//                .lineToY(-50)
-//                .lineToY(-30)
-//                .splineTo(new Vector2d(62, -5),Math.PI/2)
-//                .lineToY(-50)
-//                .lineToY(-30)
-//                .splineTo(new Vector2d(71,-5),Math.PI/2)
-//                .setTangent(Math.PI/2)
-//                .lineToY(-50)
-//                //grab spec
-//                .afterDisp(50, slide.slideUp() )
-////                .afterDisp(60, arm.arm() )
-//                .strafeTo(new Vector2d(10,-30))
-////                .stopAndAdd(slide.slideUp())
-//                .waitSeconds(.5)
-//                .setTangent(-Math.PI/2)
-//                .afterDisp(50, slide.slideDown() )
-//                .strafeTo(new Vector2d(65,-55))
-//                .waitSeconds(.5)
-//                .afterDisp(50, slide.slideUp() )
-//                .strafeTo(new Vector2d(5,-30))
-//                .waitSeconds(.5)
-//                .setTangent(-Math.PI/2)
-////                .stopAndAdd(slide.slideDown())
-//                .afterDisp(50, slide.slideDown() )
-//                .strafeTo(new Vector2d(65,-55))
-//                .waitSeconds(.5)
-//                .afterDisp(50, slide.slideUp() )
-//                .strafeTo(new Vector2d(0,-30))
-//                .stopAndAdd(arm.armUp());
-                  .stopAndAdd(arm.armPreScoring())
-                  .stopAndAdd(slide.slideUp())
-                  .waitSeconds(.5)
-                  .stopAndAdd(arm.armPostScoring())
-                  .waitSeconds(2);
+                .afterDisp(50, slide.slideUp() )
+//                .stopAndAdd(arm.armPostScoring())
+//                .afterDisp(60, arm.arm() )
+                .stopAndAdd(arm.armPreScoring())
+                .strafeTo(new Vector2d(10,-27))
+//                .stopAndAdd(arm.armPostScoring())
+                .waitSeconds(.5)
+                .stopAndAdd(claw.openClaw())
+                .stopAndAdd(arm.armPickUp())
+                .waitSeconds(.5)
+                .setTangent(-Math.PI/2)
+                .afterDisp(50, slide.slideDown())
+                .strafeTo(new Vector2d(24,-59.5))
+                .splineTo(new Vector2d(52, 0),Math.PI/2)
+                .lineToY(-50)
+                .lineToY(-30)
+                .splineTo(new Vector2d(62, -5),Math.PI/2)
+                .lineToY(-50)
+                .lineToY(-30)
+                .splineTo(new Vector2d(71,-5),Math.PI/2)
+                .setTangent(Math.PI/2)
+                .lineToY(-50)
+                //grab spec
+                .strafeTo(new Vector2d(65,-54))
+                .waitSeconds(0.45)
+                .stopAndAdd(claw.closeClaw())
+                .stopAndAdd(arm.armPreScoring())
+//                .stopAndAdd(arm.armPostScoring())
+                .stopAndAdd(claw.openClaw())
+                .stopAndAdd(arm.armPickUp())
+                .afterDisp(50, slide.slideUp() )
+                .strafeTo(new Vector2d(5,-27))
+                .stopAndAdd(arm.armPreScoring())
+                .waitSeconds(.5)
+                .setTangent(-Math.PI/2)
+//                .stopAndAdd(slide.slideDown())
+                .afterDisp(50, slide.slideDown() )
+                .strafeTo(new Vector2d(65,-54))
+                .stopAndAdd(arm.armPickUp())
+                .waitSeconds(0.45)
+                .stopAndAdd(claw.closeClaw())
+                .stopAndAdd(arm.armPreScoring())
+//                .stopAndAdd(arm.armPostScoring())
+                .stopAndAdd(claw.openClaw())
+                .stopAndAdd(arm.armPickUp())
+                .afterDisp(50, slide.slideUp() )
+                .strafeTo(new Vector2d(2,-27))
+                .stopAndAdd(arm.armPreScoring());
+
 
 
 
@@ -253,7 +267,9 @@ public class RedSpicemen extends LinearOpMode {
                 .lineToY(-30);
 
         // actions that need to happen on init; for instance, a claw tightening.
+        Actions.runBlocking(claw.openClaw());
         Actions.runBlocking(arm.clockwise());
+        Actions.runBlocking(arm.armInit());
         Actions.runBlocking(claw.closeClaw());
 
 
