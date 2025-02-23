@@ -64,7 +64,7 @@ public class  robot {
     public LinearOpMode myOpMode;
     public OpMode notMyopMode;
     public DcMotorEx leftFront, leftBack, rightFront, rightBack, rightThing, leftThing, intake;
-    public ServoImplEx claw;
+    public ServoImplEx claw,rotate;
     public CRServoImplEx rightAxon, leftAxon;
 
     public AnalogInput leftArm, rightArm;
@@ -95,6 +95,7 @@ public class  robot {
         leftThing = myOpMode.hardwareMap.get(DcMotorEx.class, "leftThing");
         leftAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "leftAxon");
         rightAxon = myOpMode.hardwareMap.get(CRServoImplEx.class, "rightAxon");
+        rotate = myOpMode.hardwareMap.get(ServoImplEx.class,"rotate");
         // analog for our axon encoder postions
         leftArm =  myOpMode.hardwareMap.get(AnalogInput.class, "leftArm");
         rightArm =  myOpMode.hardwareMap.get(AnalogInput.class, "rightArm");
@@ -238,15 +239,10 @@ public class  robot {
     right vice versa
     - DONT MAKE THE ARM FOWARD/BACKWARD SPEED MORE THAN 0.25
      **/
-    public void clawSpinClockWise(double power){
-        rightAxon.setPower((-power));
-        leftAxon.setPower((power));
+    public void rotateClaw(double pos){
+        rotate.setPosition(pos);
     }
 
-    public void clawSpinCounterClockWise(double power){
-        rightAxon.setPower((power));
-        leftAxon.setPower((-power));
-    }
 
     /** to make claw spin:
     (relative to the front)
@@ -254,18 +250,14 @@ public class  robot {
     both negative: counterclockwise
       **/
 
-    public void armBack (double power, double right){ //claw backword
-        rightAxon.setPower(-power+right);
+    public void armBack (double power){ //claw backword
+        rightAxon.setPower(-power);
         leftAxon.setPower(-power);
     }
 
-    public void armFoward (double power, double right){ // clawfoward
-        rightAxon.setPower(power-right);
+    public void armFoward (double power){ // clawfoward
+        rightAxon.setPower(power);
         leftAxon.setPower(power);
-    }
-    public void stop(){
-        rightAxon.setPower(0);
-        leftAxon.setPower(0);
     }
 
     public void setIntake (double power){ // setting power to intake

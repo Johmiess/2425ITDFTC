@@ -109,29 +109,25 @@ public class RedSpicemen extends LinearOpMode {
 
     public class Arm{
         private CRServoImplEx leftAxon, rightAxon;
-        private DcMotorEx encoder;
-        private int position;
+        private ServoImplEx rotate;
         private ElapsedTime time;
 
         public Arm(HardwareMap hardwareMap){
             leftAxon = hardwareMap.get(CRServoImplEx.class,"leftAxon");
             rightAxon = hardwareMap.get(CRServoImplEx.class, "rightAxon");
-            encoder = hardwareMap.get(DcMotorEx.class,"intake");
-            encoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rotate = hardwareMap.get(ServoImplEx.class,"rotate");
         }
         public class clockwise implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                leftAxon.setPower(1);
-                rightAxon.setPower(-1);
+                rotate.setPosition(.92);
                 return false;
             }
         }
         public class counterclockwise implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                leftAxon.setPower(-1);
-                rightAxon.setPower(1);
+                rotate.setPosition(.35);
                 return false;
             }
         }
@@ -145,10 +141,16 @@ public class RedSpicemen extends LinearOpMode {
                 }
                 leftAxon.setPower(0);
                 rightAxon.setPower(0);
-                position = encoder.getCurrentPosition();
-                while (position<=.5/*value for 180*/) {
+                return false;
+            }
+        }
+        public class armDown implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                time.reset();
+                while (time.seconds() < .8) {
                     leftAxon.setPower(-1);
-                    rightAxon.setPower(1);
+                    rightAxon.setPower(-1);
                 }
                 leftAxon.setPower(0);
                 rightAxon.setPower(0);
@@ -156,6 +158,10 @@ public class RedSpicemen extends LinearOpMode {
             }
         }
         public Action armUp(){return new Arm.armUp();}
+        public Action armDown(){return new Arm.armDown();}
+        public Action clockwise(){return new Arm.clockwise();}
+        public Action counterclockwise(){return new Arm.counterclockwise();}
+
     }
 
 
@@ -170,10 +176,9 @@ public class RedSpicemen extends LinearOpMode {
         // vision here that outputs position
 
         TrajectoryActionBuilder temp = drive.actionBuilder(drive.pose)
-                .stopAndAdd(arm.armUp());
-
-        TrajectoryActionBuilder score = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(90)))
-                .strafeTo(new Vector2d(1,1));
+                .stopAndAdd(arm.counterclockwise())
+                .stopAndAdd(arm.clockwise())
+                .lineToY(-30);
 
         // actions that need to happen on init; for instance, a claw tightening.
 //        Actions.runBlocking(claw.openClaw());
