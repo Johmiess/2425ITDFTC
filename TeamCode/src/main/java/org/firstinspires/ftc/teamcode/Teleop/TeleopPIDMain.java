@@ -18,6 +18,9 @@ public class TeleopPIDMain extends LinearOpMode {
     public static double low = 0;
     public static double high = 0;
 
+    public static double clawOpen = 0;
+    public static double clawClosed = 0.47;
+
     @Override
     public void runOpMode() {
         robo = new robot(this);
@@ -45,9 +48,9 @@ public class TeleopPIDMain extends LinearOpMode {
             //bumper & trigger controls
 
             if (gamepad2.right_bumper) {
-                robo.claw(0.435 );
+                robo.claw(clawClosed );
             } else {
-                robo.claw(0);
+                robo.claw(clawOpen);
             }
 
             if (gamepad2.right_trigger > 0.2) {
