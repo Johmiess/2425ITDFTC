@@ -30,8 +30,83 @@ public class RedSpicemen extends LinearOpMode {
 
     public static double iterationTime = 0;
 
+    public static double clawiterationTime = .355;
+
+    public static double armiterationTime = 0.3;
+
     public static double speed = 0;
 
+    public class Arm{
+        private CRServoImplEx rightAxon, leftAxon;
+        private ElapsedTime time;
+
+
+        public Arm(HardwareMap hardwareMap){leftAxon = hardwareMap.get(CRServoImplEx.class, "leftAxon"); rightAxon = hardwareMap.get(CRServoImplEx.class, "rightAxon");time = new ElapsedTime();}
+        public class ArmUp implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet){
+                time.reset();
+                while (time.seconds()<armiterationTime){
+                    rightAxon.setPower(1);
+                    leftAxon.setPower(1);
+                }
+                rightAxon.setPower(0);
+                leftAxon.setPower(0);
+                return false;
+            }
+        }
+        public Action armUp() {return new Arm.ArmUp();}
+        public class ArmDown implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet){
+                time.reset();
+                while (time.seconds()<armiterationTime - 0.5){
+                    rightAxon.setPower(-1);
+                    leftAxon.setPower(-1);
+                }
+                rightAxon.setPower(0);
+                leftAxon.setPower(0);
+                return false;
+            }
+        }
+
+        public class armClockSpin implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet){
+                time.reset();
+                while (time.seconds()<clawiterationTime){
+                    rightAxon.setPower(-.25);
+                    leftAxon.setPower(.25);
+                }
+                rightAxon.setPower(0);
+                leftAxon.setPower(0);
+                return false;
+            }
+        }
+
+        public class armCounterClockSpin implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet){
+                time.reset();
+                while (time.seconds()<clawiterationTime){
+                    rightAxon.setPower(-.25);
+                    leftAxon.setPower(.25);
+                }
+                rightAxon.setPower(0);
+                leftAxon.setPower(0);
+                return false;
+            }
+        }
+        public Action armDown() {return new Arm.ArmDown();}
+
+        public Action slidesUp() {return new Arm.ArmUp();}
+
+        public Action armClockSpin() {return new Arm.armClockSpin();}
+
+        public Action armCounterClockSpin() {return new Arm.armCounterClockSpin();}
+
+
+    }
 
     public class VertSlide {
         private DcMotorEx leftThing, rightThing;
@@ -65,7 +140,7 @@ public class RedSpicemen extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet){
                 time.reset();
                 while (time.seconds()< iterationTime ){
-                   verticalSlides(.5);
+                   verticalSlides(-.5);
                 }
                 leftThing.setPower(0);
                 rightThing.setPower(0);
@@ -85,33 +160,44 @@ public class RedSpicemen extends LinearOpMode {
     public void runOpMode() {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -59.5, Math.toRadians(90)));
         VertSlide slide = new VertSlide(hardwareMap);
+        Arm arm = new Arm(hardwareMap);
+
 
         // vision here that outputs position
 
         TrajectoryActionBuilder temp = drive.actionBuilder(drive.pose)
-                .splineTo(new Vector2d(52, -5),Math.PI/2)
-                .lineToY(-50)
-                .lineToY(-30)
-                .splineTo(new Vector2d(62, -5),Math.PI/2)
-                .lineToY(-50)
-                .lineToY(-30)
-                .splineTo(new Vector2d(71,-5),Math.PI/2)
-                .setTangent(Math.PI/2)
-                .lineToY(-50)
-                //grab spec
-                .strafeTo(new Vector2d(10,-30))
-//                .stopAndAdd(slide.slideUp())
-                .waitSeconds(.5)
-                .setTangent(-Math.PI/2)
-                .strafeTo(new Vector2d(65,-55))
-                .waitSeconds(.5)
-                .strafeTo(new Vector2d(5,-30))
-                .waitSeconds(.5)
-                .setTangent(-Math.PI/2)
-//                .stopAndAdd(slide.slideDown())
-                .strafeTo(new Vector2d(65,-55))
-                .waitSeconds(.5)
-                .strafeTo(new Vector2d(0,-30));
+//                .splineTo(new Vector2d(52, -5),Math.PI/2)
+//                .lineToY(-50)
+//                .lineToY(-30)
+//                .splineTo(new Vector2d(62, -5),Math.PI/2)
+//                .lineToY(-50)
+//                .lineToY(-30)
+//                .splineTo(new Vector2d(71,-5),Math.PI/2)
+//                .setTangent(Math.PI/2)
+//                .lineToY(-50)
+//                //grab spec
+//                .afterDisp(50, slide.slideUp() )
+//                .strafeTo(new Vector2d(10,-30))
+////                .stopAndAdd(slide.slideUp())
+//                .waitSeconds(.5)
+//                .setTangent(-Math.PI/2)
+//                .afterDisp(50, slide.slideDown() )
+//                .strafeTo(new Vector2d(65,-55))
+//                .waitSeconds(.5)
+//                .afterDisp(50, slide.slideUp() )
+//                .strafeTo(new Vector2d(5,-30))
+//                .waitSeconds(.5)
+//                .setTangent(-Math.PI/2)
+////                .stopAndAdd(slide.slideDown())
+//                .afterDisp(50, slide.slideDown() )
+//                .strafeTo(new Vector2d(65,-55))
+//                .waitSeconds(.5)
+//                .afterDisp(50, slide.slideUp() )
+//                .strafeTo(new Vector2d(0,-30))
+                .stopAndAdd(arm.armClockSpin())
+                .stopAndAdd(arm.armUp());
+
+
 
         TrajectoryActionBuilder score = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(90)))
                 .strafeTo(new Vector2d(1,1));
