@@ -40,6 +40,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.ArrayList;
+
 /**
  * This file works in conjunction with the External Hardware Class sample called: ConceptExternalHardwareClass.java
  * Please read the explanations in that Sample about how to use this class definition.
@@ -63,7 +65,7 @@ public class  robot {
     // declaring all the variables that are gonna be used
     public LinearOpMode myOpMode;
     public OpMode notMyopMode;
-    public DcMotorEx leftFront, leftBack, rightFront, rightBack, rightThing, leftThing, intake;
+    public DcMotorEx leftFront, leftBack, rightFront, rightBack, rightThing, leftThing;
     public ServoImplEx claw,rotate;
     public ServoImplEx rightAxon, leftAxon;
 
@@ -82,13 +84,12 @@ public class  robot {
     public double close_pos = 0.69;
     public double open_pos = 0.10;
 
-
     public void init() {
         leftFront = myOpMode.hardwareMap.get(DcMotorEx.class, "leftFront");
         leftBack = myOpMode.hardwareMap.get(DcMotorEx.class, "leftBack");
         rightFront = myOpMode.hardwareMap.get(DcMotorEx.class, "rightFront");
         rightBack = myOpMode.hardwareMap.get(DcMotorEx.class, "rightBack");
-        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
+//        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
 
 //        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
         rightThing = myOpMode.hardwareMap.get(DcMotorEx.class, "rightThing");
@@ -117,7 +118,6 @@ public class  robot {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightThing.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftThing.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
 
@@ -126,7 +126,6 @@ public class  robot {
         rightBack.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         leftFront.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         leftBack.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
 
 
@@ -250,19 +249,16 @@ public class  robot {
     both negative: counterclockwise
       **/
 
-    public void armBack (double power){ //claw backword
-        rightAxon.setPosition(-rightAxon.getPosition()+.01);
-        leftAxon.setPosition(-leftAxon.getPosition()+.01);
+    public void armBack (){ //claw backword
+        rightAxon.setPosition(rightAxon.getPosition()-.003);
+        leftAxon.setPosition(leftAxon.getPosition()-.003);
     }
 
-    public void armFoward (double power){ // clawfoward
-        rightAxon.setPosition(rightAxon.getPosition()+.01);
-        leftAxon.setPosition(leftAxon.getPosition()+.01);
+    public void armFoward (){ // clawfoward
+        rightAxon.setPosition(rightAxon.getPosition()+.003);
+        leftAxon.setPosition(leftAxon.getPosition()+.003);
     }
 
-    public void setIntake (double power){ // setting power to intake
-        intake.setPower(power);
-    }
 
 
     /**

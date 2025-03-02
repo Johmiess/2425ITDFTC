@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
 import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
@@ -12,30 +13,28 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import org.firstinspires.ftc.teamcode.MecanumDrive;
-
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.MecanumDrive;
+
 @Config
-@Autonomous(name = "RedSpicemen", group = "Autonomous")
-public class RedSpicemen extends LinearOpMode {
+@Autonomous(name = "RedSpicemenPlus1", group = "Autonomous")
+public class RedSpicemenPlus1 extends LinearOpMode {
 
 
-    public static double iterationTime = .13;
+    public static double iterationTime = .11;
 
     public static double clawiterationTime = .355;
 
     public static double initToScoringTime = 0.3;
     public static double ScoringToPickUpTime = 0.8;
     public static double pickUpToScoringTime = 0.8;
-    public static double clawClosedPos = 1;
+    public static double clawClosedPos = 0.4;
 
-    public static double clawOpenPos = .8;
-    public static double clawLeft = .23;
-    public static double clawRight = .9;
+    public static double clawOpenPos = .1;
 
     public static double speed = 0;
 
@@ -62,7 +61,7 @@ public class RedSpicemen extends LinearOpMode {
             }
         }
         public Action closeClaw() {
-            return new Claw.CloseClaw();
+            return new CloseClaw();
         }
 
         public class OpenClaw implements Action {
@@ -73,7 +72,7 @@ public class RedSpicemen extends LinearOpMode {
             }
         }
         public Action openClaw() {
-            return new Claw.OpenClaw();
+            return new OpenClaw();
         }
     }
     public class VertSlide {
@@ -115,9 +114,9 @@ public class RedSpicemen extends LinearOpMode {
             }
         }
 
-        public Action slideUp() {return new VertSlide.slidesUp();}
+        public Action slideUp() {return new slidesUp();}
 
-        public Action slideDown() {return new VertSlide.slideDown();}
+        public Action slideDown() {return new slideDown();}
     }
 
     public class Arm{
@@ -133,14 +132,14 @@ public class RedSpicemen extends LinearOpMode {
         public class clockwise implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                rotate.setPosition(clawRight);
+                rotate.setPosition(.92);
                 return false;
             }
         }
         public class counterclockwise implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                rotate.setPosition(clawLeft);
+                rotate.setPosition(.35);
                 return false;
             }
         }
@@ -148,8 +147,8 @@ public class RedSpicemen extends LinearOpMode {
         public class armInit implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                leftAxon.setPosition(1.00);
-                rightAxon.setPosition(1.00);
+                leftAxon.setPosition(.95);
+                rightAxon.setPosition(.95);
                 return false;
             }
         }
@@ -186,8 +185,8 @@ public class RedSpicemen extends LinearOpMode {
 
         public Action armPostScoring(){return new armPostScoring();}
 
-        public Action clockwise(){return new Arm.clockwise();}
-        public Action counterclockwise(){return new Arm.counterclockwise();}
+        public Action clockwise(){return new clockwise();}
+        public Action counterclockwise(){return new counterclockwise();}
 
     }
 
@@ -196,7 +195,7 @@ public class RedSpicemen extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -59.5, Math.toRadians(90)));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -56, Math.toRadians(90)));
         VertSlide slide = new VertSlide(hardwareMap);
         Arm arm = new Arm(hardwareMap);
         Claw claw = new Claw(hardwareMap);
@@ -204,9 +203,10 @@ public class RedSpicemen extends LinearOpMode {
         // vision here that outputs position
 
         TrajectoryActionBuilder temp = drive.actionBuilder(drive.pose)
-                /*.stopAndAdd(arm.armPreScoring())
+                .stopAndAdd(arm.armPreScoring())
                 .strafeTo(new Vector2d(10,-24))
                 .stopAndAdd(slide.slideUp())
+                .stopAndAdd(arm.counterclockwise())
                 .waitSeconds(1)
                 .stopAndAdd(arm.armPostScoring())
                 .waitSeconds(1)
@@ -216,63 +216,33 @@ public class RedSpicemen extends LinearOpMode {
                 .waitSeconds(.5)
                 .setTangent(-Math.PI/2)
                 .afterDisp(50, slide.slideDown())
-                .strafeTo(new Vector2d(24,-54))
-                .setTangent(-Math.PI/2)
-                .lineToY(-52)*/
-                .splineTo(new Vector2d(52, 0),Math.PI/2)
-                .lineToY(-50)
-                .lineToY(-30)
-                .splineTo(new Vector2d(63, -5),Math.PI/2)
-                .lineToY(-50)
-                .lineToY(-30)
-                .splineTo(new Vector2d(71,-5),Math.PI/2)
-                .setTangent(Math.PI/2)
-                .lineToY(-55);
-                //grab spec
-//                .strafeTo(new Vector2d(65,-54))
-//                .waitSeconds(2)
-//                .stopAndAdd(claw.closeClaw());
-/*                .stopAndAdd(arm.armPreScoring())
-                .afterDisp(50, slide.slideUp() )
-                .strafeTo(new Vector2d(7,-27))
-//                .stopAndAdd(arm.armPostScoring())
-                .stopAndAdd(claw.openClaw())
-                .waitSeconds(.5)
-                .stopAndAdd(arm.armPickUp())
-                .afterDisp(50, slide.slideDown() )
-                .strafeTo(new Vector2d(65,-54))
-                .waitSeconds(1)
+                .lineToX(60)
+                .lineToY(-56)
+                .strafeTo(new Vector2d(60,-56))
+                .waitSeconds(2)
                 .stopAndAdd(claw.closeClaw())
+                .waitSeconds(.5)
                 .stopAndAdd(arm.armPreScoring())
-//                .stopAndAdd(arm.armPostScoring())
-                .afterDisp(50, slide.slideUp() )
-                .strafeTo(new Vector2d(2,-27))
-                .stopAndAdd(arm.armPreScoring());*/
-
-
-
-
-
-
-
-
-
-
-        TrajectoryActionBuilder score = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(90)))
-                .strafeTo(new Vector2d(1,1))
-                .stopAndAdd(arm.counterclockwise())
                 .stopAndAdd(arm.clockwise())
-                .lineToY(-30);
+                .afterDisp(50, slide.slideUp())
+                .strafeTo(new Vector2d(5,-24))
+                .stopAndAdd(arm.armPostScoring())
+                .waitSeconds(.5)
+                .stopAndAdd(claw.openClaw());
+
+
+
+
+
 
         // actions that need to happen on init; for instance, a claw tightening.
-        Actions.runBlocking(claw.openClaw());
         Actions.runBlocking(arm.clockwise());
         Actions.runBlocking(arm.armInit());
         ElapsedTime time = new ElapsedTime();
-        /*while (time.seconds()<2){
+        while (time.seconds()<2){
             telemetry.addData("doing","nothing");
         }
-        Actions.runBlocking(claw.closeClaw());*/
+        Actions.runBlocking(claw.closeClaw());
 
 
 

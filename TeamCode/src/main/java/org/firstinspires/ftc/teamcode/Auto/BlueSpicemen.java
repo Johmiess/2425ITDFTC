@@ -20,8 +20,8 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
-@Autonomous(name = "RedSpicemen", group = "Autonomous")
-public class RedSpicemen extends LinearOpMode {
+@Autonomous(name = "BlueSpicemen", group = "Autonomous")
+public class BlueSpicemen extends LinearOpMode {
 
 
     public static double iterationTime = .13;
@@ -31,11 +31,9 @@ public class RedSpicemen extends LinearOpMode {
     public static double initToScoringTime = 0.3;
     public static double ScoringToPickUpTime = 0.8;
     public static double pickUpToScoringTime = 0.8;
-    public static double clawClosedPos = 1;
+    public static double clawClosedPos = 0.35;
 
-    public static double clawOpenPos = .8;
-    public static double clawLeft = .23;
-    public static double clawRight = .9;
+    public static double clawOpenPos = 0;
 
     public static double speed = 0;
 
@@ -107,7 +105,7 @@ public class RedSpicemen extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet){
                 time.reset();
                 while (time.seconds()< iterationTime ){
-                   verticalSlides(-.5);
+                    verticalSlides(-.5);
                 }
                 leftThing.setPower(0);
                 rightThing.setPower(0);
@@ -133,14 +131,14 @@ public class RedSpicemen extends LinearOpMode {
         public class clockwise implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                rotate.setPosition(clawRight);
+                rotate.setPosition(.92);
                 return false;
             }
         }
         public class counterclockwise implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                rotate.setPosition(clawLeft);
+                rotate.setPosition(.35);
                 return false;
             }
         }
@@ -148,8 +146,8 @@ public class RedSpicemen extends LinearOpMode {
         public class armInit implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                leftAxon.setPosition(1.00);
-                rightAxon.setPosition(1.00);
+                leftAxon.setPosition(0.00);
+                rightAxon.setPosition(0.00);
                 return false;
             }
         }
@@ -196,7 +194,7 @@ public class RedSpicemen extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -59.5, Math.toRadians(90)));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(24, -59.5, Math.toRadians(-90)));
         VertSlide slide = new VertSlide(hardwareMap);
         Arm arm = new Arm(hardwareMap);
         Claw claw = new Claw(hardwareMap);
@@ -204,8 +202,8 @@ public class RedSpicemen extends LinearOpMode {
         // vision here that outputs position
 
         TrajectoryActionBuilder temp = drive.actionBuilder(drive.pose)
-                /*.stopAndAdd(arm.armPreScoring())
-                .strafeTo(new Vector2d(10,-24))
+                .stopAndAdd(arm.armPreScoring())
+                .strafeTo(new Vector2d(-10,24))
                 .stopAndAdd(slide.slideUp())
                 .waitSeconds(1)
                 .stopAndAdd(arm.armPostScoring())
@@ -214,41 +212,20 @@ public class RedSpicemen extends LinearOpMode {
                 .waitSeconds(1)
                 .stopAndAdd(arm.armPickUp())
                 .waitSeconds(.5)
-                .setTangent(-Math.PI/2)
-                .afterDisp(50, slide.slideDown())
-                .strafeTo(new Vector2d(24,-54))
-                .setTangent(-Math.PI/2)
-                .lineToY(-52)*/
-                .splineTo(new Vector2d(52, 0),Math.PI/2)
-                .lineToY(-50)
-                .lineToY(-30)
-                .splineTo(new Vector2d(63, -5),Math.PI/2)
-                .lineToY(-50)
-                .lineToY(-30)
-                .splineTo(new Vector2d(71,-5),Math.PI/2)
                 .setTangent(Math.PI/2)
-                .lineToY(-55);
-                //grab spec
-//                .strafeTo(new Vector2d(65,-54))
-//                .waitSeconds(2)
-//                .stopAndAdd(claw.closeClaw());
-/*                .stopAndAdd(arm.armPreScoring())
-                .afterDisp(50, slide.slideUp() )
-                .strafeTo(new Vector2d(7,-27))
-//                .stopAndAdd(arm.armPostScoring())
-                .stopAndAdd(claw.openClaw())
-                .waitSeconds(.5)
-                .stopAndAdd(arm.armPickUp())
-                .afterDisp(50, slide.slideDown() )
-                .strafeTo(new Vector2d(65,-54))
-                .waitSeconds(1)
-                .stopAndAdd(claw.closeClaw())
-                .stopAndAdd(arm.armPreScoring())
-//                .stopAndAdd(arm.armPostScoring())
-                .afterDisp(50, slide.slideUp() )
-                .strafeTo(new Vector2d(2,-27))
-                .stopAndAdd(arm.armPreScoring());*/
-
+                .afterDisp(50, slide.slideDown())
+                .strafeTo(new Vector2d(-24,54))
+                .setTangent(-Math.PI/2)
+                .lineToY(52)
+                .splineTo(new Vector2d(-52, 5),-Math.PI/2)
+                .lineToY(50)
+                .lineToY(30)
+                .splineTo(new Vector2d(-62, 5),-Math.PI/2)
+                .lineToY(50)
+                .lineToY(30)
+                .splineTo(new Vector2d(-71,5),-Math.PI/2)
+                .setTangent(-Math.PI/2)
+                .lineToY(50);
 
 
 
@@ -269,10 +246,10 @@ public class RedSpicemen extends LinearOpMode {
         Actions.runBlocking(arm.clockwise());
         Actions.runBlocking(arm.armInit());
         ElapsedTime time = new ElapsedTime();
-        /*while (time.seconds()<2){
+        while (time.seconds()<2){
             telemetry.addData("doing","nothing");
         }
-        Actions.runBlocking(claw.closeClaw());*/
+        Actions.runBlocking(claw.closeClaw());
 
 
 

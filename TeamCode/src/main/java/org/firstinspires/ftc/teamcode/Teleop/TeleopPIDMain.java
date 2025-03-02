@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Config.robot;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 
 @Config
 @TeleOp(name="full teleop")
@@ -14,12 +19,14 @@ public class TeleopPIDMain extends LinearOpMode {
     double x, y, rx, lf, lb, rf, rb, denominator = 0;
 
     public static double power = 0.75;
-    public static double right =.1;
+    public static double right =.9;
+    public static double left = .23;
     public static double low = 0;
     public static double high = 0;
 
     public static double clawOpen = 0;
-    public static double clawClosed = 0.47;
+    public static double clawClosed = .23;
+    public OpenCvCamera cam;
 
     @Override
     public void runOpMode() {
@@ -59,13 +66,6 @@ public class TeleopPIDMain extends LinearOpMode {
                 robo.setMotorPowers(lf, lb, rf, rb);
             }
 
-            if(gamepad1.left_trigger > 0.2){
-                robo.setIntake(1);
-            } else if(gamepad1.left_bumper){
-                robo.setIntake(-1);
-            } else {
-                robo.setIntake(0);
-            }
 
             // x,y,a,b
 
@@ -91,22 +91,23 @@ public class TeleopPIDMain extends LinearOpMode {
 
             // dpad controls
 
-            if (gamepad2.dpad_up) {
-                robo.armFoward(0.5);
-            } else if (gamepad2.dpad_down) {
-                robo.armBack(0.5);
+            if (gamepad2.dpad_down) {
+                robo.armFoward();
+            } else if (gamepad2.dpad_up) {
+                robo.armBack();
             } else if(gamepad2.dpad_right){
-                robo.rotateClaw(.35);
+                robo.rotateClaw(right);
             } else if(gamepad2.dpad_left){
-                robo.rotateClaw(.92);
+                robo.rotateClaw(left);
             }
 
             telemetry.addData("LF", robo.leftFront.getPower());
             telemetry.addData("RF", robo.rightFront.getPower());
             telemetry.addData("RB", robo.rightBack.getPower());
             telemetry.addData("RF", robo.rightFront.getPower());
-            telemetry.addData("JST LEFT", robo.getRightArmEncoderPosition());
-            telemetry.addData("JST RIGHT", robo.getLeftArmEncoderPosition());
+            telemetry.addData("ra", robo.rightAxon.getPosition());
+            telemetry.addData("la", robo.leftAxon.getPosition());
+            telemetry.addData("vert slides",robo.leftThing.getCurrentPosition());
 
             telemetry.update();
 
