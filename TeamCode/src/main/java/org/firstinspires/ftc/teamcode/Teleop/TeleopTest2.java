@@ -3,13 +3,14 @@ package org.firstinspires.ftc.teamcode.Teleop;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.Config.robot;
 
 @Config
 @TeleOp(name="TELEOP TEST 2")
 public class TeleopTest2 extends LinearOpMode {
-    robot robo;
+    public ServoImplEx leftIntake, rightIntake;
 
     double x, y, rx, lf, lb, rf, rb, denominator = 0;
 
@@ -18,9 +19,9 @@ public class TeleopTest2 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robo = new robot(this);
-        robo.init();
 
+        leftIntake = hardwareMap.get(ServoImplEx.class, "leftIntake");
+        rightIntake = hardwareMap.get(ServoImplEx.class, "rightIntake");
         while (opModeInInit()) {
             telemetry.addLine("starting");
 
@@ -41,16 +42,18 @@ public class TeleopTest2 extends LinearOpMode {
             rb = (y + x + rx) / denominator;
 
             if (gamepad1.x) {
-                robo.vertSlidesPIDup(target);
+                leftIntake.setPosition(target);
+            }
+            if (gamepad1.a) {
+                leftIntake.setPosition(target);
+                rightIntake.setPosition(target);
+            }
+            if (gamepad1.y) {
+                rightIntake.setPosition(target);
             }
 
-
-            telemetry.addData("LF", robo.leftFront.getPower());
-            telemetry.addData("RF", robo.rightFront.getPower());
-            telemetry.addData("RB", robo.rightBack.getPower());
-            telemetry.addData("RF", robo.rightFront.getPower());
-            telemetry.addData("JST LEFT", robo.getRightArmEncoderPosition());
-            telemetry.addData("JST RIGHT", robo.getLeftArmEncoderPosition());
+            telemetry.addData("left",leftIntake.getPosition());
+            telemetry.addData("right",rightIntake.getPosition());
 
             telemetry.update();
 

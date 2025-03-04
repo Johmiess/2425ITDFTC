@@ -67,7 +67,7 @@ public class  robot {
     public OpMode notMyopMode;
     public DcMotorEx leftFront, leftBack, rightFront, rightBack, rightThing, leftThing;
     public ServoImplEx claw,rotate;
-    public ServoImplEx rightAxon, leftAxon;
+    public ServoImplEx rightAxon, leftAxon, rightIntake, leftIntake;
 
     public AnalogInput leftArm, rightArm;
     public  double output;
@@ -83,6 +83,9 @@ public class  robot {
 
     public double close_pos = 0.69;
     public double open_pos = 0.10;
+    public double down = .1;
+    public double up = .45;
+
 
     public void init() {
         leftFront = myOpMode.hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -101,6 +104,8 @@ public class  robot {
         leftArm =  myOpMode.hardwareMap.get(AnalogInput.class, "leftArm");
         rightArm =  myOpMode.hardwareMap.get(AnalogInput.class, "rightArm");
         claw = myOpMode.hardwareMap.get(ServoImplEx.class, "claw");
+        leftIntake = myOpMode.hardwareMap.get(ServoImplEx.class, "leftIntake");
+        rightIntake = myOpMode.hardwareMap.get(ServoImplEx.class, "rightIntake");
 
         rightBack.setDirection(DcMotorEx.Direction.REVERSE);
         rightFront.setDirection(DcMotorEx.Direction.REVERSE);
@@ -257,6 +262,11 @@ public class  robot {
     public void armFoward (){ // clawfoward
         rightAxon.setPosition(rightAxon.getPosition()+.003);
         leftAxon.setPosition(leftAxon.getPosition()+.003);
+    }
+
+    public void intakeUp(double pos){
+        leftIntake.setPosition(pos);
+        rightIntake.setPosition(pos);
     }
 
 
