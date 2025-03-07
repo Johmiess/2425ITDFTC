@@ -83,6 +83,7 @@ public class TeleopPID extends LinearOpMode {
 
                 robo.vertSlidesPIDdown(LiftUtil.downTarget);
             } else {
+                robo.PIDresetintSum();
                 robo.horizontalSlides(0);
             }
 

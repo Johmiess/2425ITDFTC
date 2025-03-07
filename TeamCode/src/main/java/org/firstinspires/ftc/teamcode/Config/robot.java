@@ -189,7 +189,7 @@ public class  robot {
           LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
     }
 
-    public void PIDresetintSum (double target){
+    public void PIDresetintSum (){
 
         LiftUtil.armIntegralSum = 0;
         LiftUtil.vertSlideintegralSum = 0;
