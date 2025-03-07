@@ -7,18 +7,19 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Config.LiftUtil;
 import org.firstinspires.ftc.teamcode.Config.robot;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 
 @Config
-@TeleOp(name="full teleop")
-public class TeleopPIDMain extends LinearOpMode {
+@TeleOp(name="TELEOP PID")
+public class TeleopPID extends LinearOpMode {
     robot robo;
 
     double x, y, rx, lf, lb, rf, rb, denominator = 0;
 
-    public static double power = 0.75;
+    public static double score = .01;
     public static double right =.9;
     public static double left = .23;
     public static double low = 0;
@@ -27,7 +28,7 @@ public class TeleopPIDMain extends LinearOpMode {
     public static double clawOpen = .3;
     public static double clawClosed = .57;
 
-    public static long CYCLE_MS = 50;
+    public static long CYCLE_MS = 5;
     public OpenCvCamera cam;
 
     @Override
@@ -61,6 +62,9 @@ public class TeleopPIDMain extends LinearOpMode {
             } else {
                 robo.claw(clawOpen);
             }
+            if (gamepad2.y){
+                robo.setPos(score);
+            }
 
             if (gamepad2.right_trigger > 0.2) {
                 robo.setMotorPowers(lf * 0.2, lb * 0.2, rf * 0.2, rb * 0.2);
@@ -73,11 +77,11 @@ public class TeleopPIDMain extends LinearOpMode {
 
             if (gamepad1.x) {
 
-                robo.verticalSlides(1);
+                robo.vertSlidesPIDup(LiftUtil.target );
             }
             else if (gamepad1.y){
 
-                robo.verticalSlides(-1);
+                robo.vertSlidesPIDdown(LiftUtil.downTarget);
             } else {
                 robo.horizontalSlides(0);
             }
@@ -128,6 +132,6 @@ public class TeleopPIDMain extends LinearOpMode {
 
             telemetry.update();
 
-            }
         }
     }
+}

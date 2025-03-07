@@ -25,17 +25,14 @@ public class RedSpicemen extends LinearOpMode {
 
 
     public static double iterationTime = .13;
+    public static double clawClosedPos = .55;
 
-    public static double clawiterationTime = .355;
-
-    public static double initToScoringTime = 0.3;
-    public static double ScoringToPickUpTime = 0.8;
-    public static double pickUpToScoringTime = 0.8;
-    public static double clawClosedPos = 1;
-
-    public static double clawOpenPos = .8;
+    public static double clawOpenPos = .3;
     public static double clawLeft = .23;
     public static double clawRight = .9;
+    public static double preScore = .15;
+    public static double postScore = .01;
+    public static double pickUp = .35;
 
     public static double speed = 0;
 

@@ -5,23 +5,23 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
+import org.firstinspires.ftc.teamcode.Config.LiftUtil;
 import org.firstinspires.ftc.teamcode.Config.robot;
 
 @Config
 @TeleOp(name="TELEOP TEST 2")
 public class TeleopTest2 extends LinearOpMode {
-    public ServoImplEx leftIntake, rightIntake;
-
-    double x, y, rx, lf, lb, rf, rb, denominator = 0;
-
-    public static double power = 0.75;
-    public static double target = 0;
+    public static double open = .3;
+    public static double close = .55;
+    public static double armUp = 0;
+    public static double armDown = 0;
+    public static double vertUp = 0;
+    public static double vertDown = 0;
 
     @Override
     public void runOpMode() {
-
-        leftIntake = hardwareMap.get(ServoImplEx.class, "leftIntake");
-        rightIntake = hardwareMap.get(ServoImplEx.class, "rightIntake");
+        robot robo = new robot(this);
+        robo.init();
         while (opModeInInit()) {
             telemetry.addLine("starting");
 
@@ -29,31 +29,29 @@ public class TeleopTest2 extends LinearOpMode {
             telemetry.update();
 
         }
-
         while (opModeIsActive()) {
-            y = gamepad1.left_stick_y;
-            x = gamepad1.left_stick_x;
-            rx = gamepad1.right_stick_x;
-
-            denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            lf = (y + x - rx) / denominator;
-            lb = (y - x - rx) / denominator;
-            rf = (y - x + rx) / denominator;
-            rb = (y + x + rx) / denominator;
-
+            if (gamepad1.left_trigger>.2){
+                robo.claw(open);
+            } else if (gamepad1.left_bumper){
+                robo.claw(close);
+            }
+            if (gamepad1.right_trigger>.2){
+                robo.setPos(armDown);
+            } else if (gamepad1.right_bumper){
+                robo.setPos(armUp);
+            }
             if (gamepad1.x) {
-                leftIntake.setPosition(target);
+                robo.vertSlidesPIDup(LiftUtil.target);
             }
-            if (gamepad1.a) {
-                leftIntake.setPosition(target);
-                rightIntake.setPosition(target);
+            else if (gamepad1.y){
+                robo.vertSlidesPIDdown(LiftUtil.downTarget);
+            } else {
+                robo.horizontalSlides(0);
             }
-            if (gamepad1.y) {
-                rightIntake.setPosition(target);
-            }
-
-            telemetry.addData("left",leftIntake.getPosition());
-            telemetry.addData("right",rightIntake.getPosition());
+            telemetry.addData("leftArm",robo.leftAxon.getPosition());
+            telemetry.addData("rightArm",robo.rightAxon.getPosition());
+            telemetry.addData("claw",robo.claw.getPosition());
+            telemetry.addData("vert",robo.leftThing.getCurrentPosition());
 
             telemetry.update();
 

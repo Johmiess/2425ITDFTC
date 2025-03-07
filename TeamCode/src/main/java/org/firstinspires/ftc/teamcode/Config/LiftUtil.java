@@ -8,17 +8,27 @@ public class  LiftUtil {
 
     public static double vertSlidesError = 0;
 
-    public static double vertSlidesUpP = 0.001;
-    public static double vertSlidesUpI = 0.00002;
+    public static double target = 12200;
+    public static double downTarget = 700;
 
-    public static double vertSlidesUpD = 1;
+    public static double pickupTarget = 1500;
+
+    public static double backupTarget = 1500;
+
+
+
+
+    public static double vertSlidesUpP = 0.008;
+    public static double vertSlidesUpI = 0;
+
+    public static double vertSlidesUpD = 0;
     public static double vertSlideintegralSum = 0;
 
     public static double VertSlidesLastError = .25;
 
     public static double vertSlidesA = 0;
 
-    public static double vertSlidesDownP = 0.000004;
+    public static double vertSlidesDownP = 0.008;
     public static double vertSlidesDownI = 0.0000;
 
     public static double horiSlidesError = 0;

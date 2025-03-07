@@ -73,7 +73,6 @@ public class  robot {
     public ServoImplEx claw,rotate;
     public ServoImplEx rightAxon, leftAxon, rightIntake, leftIntake;
 
-    public AnalogInput leftArm, rightArm;
     public  double output;
     public double currentPos;
     public robot(LinearOpMode opmode) {
@@ -129,6 +128,11 @@ public class  robot {
         leftThing.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
+        leftThing.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        leftThing.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftThing.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         setMotorPowers(0);
         rightFront.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -162,26 +166,26 @@ public class  robot {
     public void vertSlidesPIDup(double target){
         ElapsedTime timer = new ElapsedTime();
         ElapsedTime oneSec = new ElapsedTime();
-        //currentPos = (lift.getCurrentPosition());
+        currentPos = (leftThing.getCurrentPosition());
         LiftUtil.vertSlidesError = target - currentPos;
         LiftUtil.vertSlideintegralSum += LiftUtil.vertSlidesError;
         double derivative = (LiftUtil.vertSlidesError - LiftUtil.VertSlidesLastError) / timer.seconds();
         output = (LiftUtil.vertSlidesUpP * LiftUtil.vertSlidesError) + (LiftUtil.vertSlidesUpI * LiftUtil.vertSlideintegralSum) + (LiftUtil.vertSlidesUpD * derivative) + (LiftUtil.vertSlidesA);
         output = (LiftUtil.vertSlidesUpP * LiftUtil.vertSlidesError) + (LiftUtil.vertSlidesUpI * LiftUtil.vertSlideintegralSum) + (LiftUtil.vertSlidesA);
-        //lift.setPower(output);
+        verticalSlides(-output);
         LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
     }
 
     public void vertSlidesPIDdown(double target){
         ElapsedTime timer = new ElapsedTime();
         ElapsedTime oneSec = new ElapsedTime();
-        //currentPos = (lift.getCurrentPosition());
+        currentPos = (leftThing.getCurrentPosition());
         LiftUtil.vertSlidesError = target - currentPos;
         LiftUtil.vertSlideintegralSum += LiftUtil.vertSlidesError;
         double derivative = (LiftUtil.vertSlidesError - LiftUtil.VertSlidesLastError) / timer.seconds();
         output = (LiftUtil.vertSlidesDownP * LiftUtil.vertSlidesError) + (LiftUtil.vertSlidesDownI * LiftUtil.vertSlideintegralSum) + (LiftUtil.vertSlidesA);
-        //lift.setPower(output);
-        LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
+        verticalSlides(-output);
+          LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
     }
 
     /**
@@ -259,13 +263,18 @@ public class  robot {
       **/
 
     public void armBack (){ //claw backword
-        rightAxon.setPosition(rightAxon.getPosition()-.003);
-        leftAxon.setPosition(leftAxon.getPosition()-.003);
+        rightAxon.setPosition(rightAxon.getPosition()-.01);
+        leftAxon.setPosition(leftAxon.getPosition()-.01);
     }
 
     public void armFoward (){ // clawfoward
-        rightAxon.setPosition(rightAxon.getPosition()+.003);
-        leftAxon.setPosition(leftAxon.getPosition()+.003);
+        rightAxon.setPosition(rightAxon.getPosition()+.01);
+        leftAxon.setPosition(leftAxon.getPosition()+.01);
+    }
+
+    public void setPos(double pos){
+        rightAxon.setPosition(pos);
+        leftAxon.setPosition(pos);
     }
 
     public void intakeUp(){
@@ -279,11 +288,11 @@ public class  robot {
     }
 
     public void intakeIn(){
-        intake.setPower(.5);
+        intake.setPower(.7);
     }
 
     public void intakeOut(){
-        intake.setPower(-.5);
+        intake.setPower(-.7);
     }
 
 
@@ -291,8 +300,7 @@ public class  robot {
      getRightArmEncoderPosition & getleftArmEncoderPosition
      @return Encoder postion of arm
      **/
-    public double getRightArmEncoderPosition(){ return  rightArm.getVoltage() / 3.3 * 360;}
-    public double getLeftArmEncoderPosition(){return  leftArm.getVoltage() / 3.3 * 360;}
+
 
 
 
