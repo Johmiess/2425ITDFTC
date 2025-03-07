@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Config;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 
@@ -54,9 +55,4 @@ public class  LiftUtil {
     public static double armA = 0;
 
     public static double armLastError = .25;
-
-
-
-
-
 }

@@ -12,6 +12,8 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import org.firstinspires.ftc.teamcode.Config.LiftUtil;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -80,21 +82,31 @@ public class RedSpicemen extends LinearOpMode {
 
         public VertSlide(HardwareMap hardwareMap){leftThing = hardwareMap.get(DcMotorEx.class, "leftThing"); rightThing = hardwareMap.get(DcMotorEx.class, "rightThing");time = new ElapsedTime();}
         public void verticalSlides(double speed) {
-            leftThing.setPower(-speed);
-            rightThing.setPower(-speed);
+            leftThing.setPower(speed);
+            rightThing.setPower(speed);
         }
         public double vals(){
-            return leftThing.getPower();
+            return leftThing.getCurrentPosition();
         }
-        public class slidesUp implements Action{
+        public void reset(){
+            LiftUtil.armIntegralSum = 0;
+            LiftUtil.vertSlideintegralSum = 0;
+            LiftUtil.horiSlideintegralSum = 0;
+        }
+        public class slideUp implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
-                time.reset();
-                while (time.seconds()< iterationTime){
-                    verticalSlides(1);
+                ElapsedTime timer = new ElapsedTime();
+                while (timer.seconds() < 3) {
+                    double currentPos = (leftThing.getCurrentPosition());
+                    LiftUtil.vertSlidesError = LiftUtil.target - currentPos;
+                    LiftUtil.vertSlideintegralSum += LiftUtil.vertSlidesError;
+                    double output = (LiftUtil.vertSlidesUpP * LiftUtil.vertSlidesError) + (LiftUtil.vertSlidesUpI * LiftUtil.vertSlideintegralSum) + (LiftUtil.vertSlidesA);
+                    verticalSlides(-output);
+                    LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
+                    sleep(50);
                 }
-                leftThing.setPower(0);
-                rightThing.setPower(0);
+                reset();
                 return false;
             }
         }
@@ -112,7 +124,7 @@ public class RedSpicemen extends LinearOpMode {
             }
         }
 
-        public Action slideUp() {return new VertSlide.slidesUp();}
+        public Action slideUp() {return new VertSlide.slideUp();}
 
         public Action slideDown() {return new VertSlide.slideDown();}
     }
@@ -201,50 +213,8 @@ public class RedSpicemen extends LinearOpMode {
         // vision here that outputs position
 
         TrajectoryActionBuilder temp = drive.actionBuilder(drive.pose)
-                /*.stopAndAdd(arm.armPreScoring())
-                .strafeTo(new Vector2d(10,-24))
                 .stopAndAdd(slide.slideUp())
-                .waitSeconds(1)
-                .stopAndAdd(arm.armPostScoring())
-                .waitSeconds(1)
-                .stopAndAdd(claw.openClaw())
-                .waitSeconds(1)
-                .stopAndAdd(arm.armPickUp())
-                .waitSeconds(.5)
-                .setTangent(-Math.PI/2)
-                .afterDisp(50, slide.slideDown())
-                .strafeTo(new Vector2d(24,-54))
-                .setTangent(-Math.PI/2)
-                .lineToY(-52)*/
-                .splineTo(new Vector2d(52, 0),Math.PI/2)
-                .lineToY(-50)
-                .lineToY(-30)
-                .splineTo(new Vector2d(63, -5),Math.PI/2)
-                .lineToY(-50)
-                .lineToY(-30)
-                .splineTo(new Vector2d(71,-5),Math.PI/2)
-                .setTangent(Math.PI/2)
-                .lineToY(-55);
-                //grab spec
-//                .strafeTo(new Vector2d(65,-54))
-//                .waitSeconds(2)
-//                .stopAndAdd(claw.closeClaw());
-/*                .stopAndAdd(arm.armPreScoring())
-                .afterDisp(50, slide.slideUp() )
-                .strafeTo(new Vector2d(7,-27))
-//                .stopAndAdd(arm.armPostScoring())
-                .stopAndAdd(claw.openClaw())
-                .waitSeconds(.5)
-                .stopAndAdd(arm.armPickUp())
-                .afterDisp(50, slide.slideDown() )
-                .strafeTo(new Vector2d(65,-54))
-                .waitSeconds(1)
-                .stopAndAdd(claw.closeClaw())
-                .stopAndAdd(arm.armPreScoring())
-//                .stopAndAdd(arm.armPostScoring())
-                .afterDisp(50, slide.slideUp() )
-                .strafeTo(new Vector2d(2,-27))
-                .stopAndAdd(arm.armPreScoring());*/
+                .lineToY(-20);
 
 
 

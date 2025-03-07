@@ -186,7 +186,7 @@ public class  robot {
         double derivative = (LiftUtil.vertSlidesError - LiftUtil.VertSlidesLastError) / timer.seconds();
         output = (LiftUtil.vertSlidesDownP * LiftUtil.vertSlidesError) + (LiftUtil.vertSlidesDownI * LiftUtil.vertSlideintegralSum) + (LiftUtil.vertSlidesA);
         verticalSlides(-output);
-          LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
+        LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
     }
 
     public void PIDresetintSum (){
@@ -309,9 +309,6 @@ public class  robot {
      getRightArmEncoderPosition & getleftArmEncoderPosition
      @return Encoder postion of arm
      **/
-
-
-
 
     public void claw(double posi){
         claw.setPosition(posi);
