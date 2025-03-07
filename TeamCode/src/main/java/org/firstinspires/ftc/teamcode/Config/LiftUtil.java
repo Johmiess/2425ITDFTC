@@ -18,8 +18,8 @@ public class  LiftUtil {
 
 
 
-    public static double vertSlidesUpP = 0.008;
-    public static double vertSlidesUpI = 0;
+    public static double vertSlidesUpP = 0.02;
+    public static double vertSlidesUpI = 0.0000005;
 
     public static double vertSlidesUpD = 0;
     public static double vertSlideintegralSum = 0;
@@ -28,8 +28,8 @@ public class  LiftUtil {
 
     public static double vertSlidesA = 0;
 
-    public static double vertSlidesDownP = 0.008;
-    public static double vertSlidesDownI = 0.0000;
+    public static double vertSlidesDownP = 0.02;
+    public static double vertSlidesDownI = 0.0000005;
 
     public static double horiSlidesError = 0;
 
