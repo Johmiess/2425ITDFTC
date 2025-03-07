@@ -191,7 +191,6 @@ public class  robot {
 
     public void PIDresetintSum (){
 
-        LiftUtil.armIntegralSum = 0;
         LiftUtil.vertSlideintegralSum = 0;
         LiftUtil.horiSlideintegralSum = 0;
 
