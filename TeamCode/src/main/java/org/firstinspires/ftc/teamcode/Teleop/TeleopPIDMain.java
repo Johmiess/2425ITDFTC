@@ -88,6 +88,21 @@ public class TeleopPIDMain extends LinearOpMode {
                 robo.verticalSlides(0);
             }
 
+            if (gamepad1.left_bumper){
+                robo.intakeIn();
+            } else if (gamepad1.left_trigger>.2){
+                robo.intakeOut();
+            } else {
+                robo.intake.setPower(0);
+            }
+
+            if (gamepad2.left_bumper){
+                robo.intakeUp();
+            } else if (gamepad2.left_trigger>.2){
+                robo.intakeDown();
+            }
+
+
 
             // dpad controls
 

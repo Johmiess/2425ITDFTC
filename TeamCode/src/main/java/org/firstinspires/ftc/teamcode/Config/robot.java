@@ -34,11 +34,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.ArrayList;
 
@@ -65,7 +69,7 @@ public class  robot {
     // declaring all the variables that are gonna be used
     public LinearOpMode myOpMode;
     public OpMode notMyopMode;
-    public DcMotorEx leftFront, leftBack, rightFront, rightBack, rightThing, leftThing;
+    public DcMotorEx leftFront, leftBack, rightFront, rightBack, rightThing, leftThing, intake;
     public ServoImplEx claw,rotate;
     public ServoImplEx rightAxon, leftAxon, rightIntake, leftIntake;
 
@@ -85,6 +89,8 @@ public class  robot {
     public double open_pos = 0.10;
     public double down = .1;
     public double up = .45;
+    public double intakeUp = .57;
+    public double intakeDown = .37;
 
 
     public void init() {
@@ -92,17 +98,15 @@ public class  robot {
         leftBack = myOpMode.hardwareMap.get(DcMotorEx.class, "leftBack");
         rightFront = myOpMode.hardwareMap.get(DcMotorEx.class, "rightFront");
         rightBack = myOpMode.hardwareMap.get(DcMotorEx.class, "rightBack");
-//        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
+        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
 
-//        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
+        intake = myOpMode.hardwareMap.get(DcMotorEx.class, "intake");
         rightThing = myOpMode.hardwareMap.get(DcMotorEx.class, "rightThing");
         leftThing = myOpMode.hardwareMap.get(DcMotorEx.class, "leftThing");
         leftAxon = myOpMode.hardwareMap.get(ServoImplEx.class, "leftAxon");
         rightAxon = myOpMode.hardwareMap.get(ServoImplEx.class, "rightAxon");
         rotate = myOpMode.hardwareMap.get(ServoImplEx.class,"rotate");
         // analog for our axon encoder postions
-        leftArm =  myOpMode.hardwareMap.get(AnalogInput.class, "leftArm");
-        rightArm =  myOpMode.hardwareMap.get(AnalogInput.class, "rightArm");
         claw = myOpMode.hardwareMap.get(ServoImplEx.class, "claw");
         leftIntake = myOpMode.hardwareMap.get(ServoImplEx.class, "leftIntake");
         rightIntake = myOpMode.hardwareMap.get(ServoImplEx.class, "rightIntake");
@@ -264,11 +268,23 @@ public class  robot {
         leftAxon.setPosition(leftAxon.getPosition()+.003);
     }
 
-    public void intakeUp(double pos){
-        leftIntake.setPosition(pos);
-        rightIntake.setPosition(pos);
+    public void intakeUp(){
+        leftIntake.setPosition(intakeUp);
+        rightIntake.setPosition(intakeUp);
     }
 
+    public void intakeDown(){
+        leftIntake.setPosition(intakeDown);
+        rightIntake.setPosition(intakeDown);
+    }
+
+    public void intakeIn(){
+        intake.setPower(.5);
+    }
+
+    public void intakeOut(){
+        intake.setPower(-.5);
+    }
 
 
     /**
