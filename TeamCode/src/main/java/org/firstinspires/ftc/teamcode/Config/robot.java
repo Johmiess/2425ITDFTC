@@ -43,6 +43,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Auto.red_asc;
 
 import java.util.ArrayList;
 
@@ -186,6 +187,14 @@ public class  robot {
         output = (LiftUtil.vertSlidesDownP * LiftUtil.vertSlidesError) + (LiftUtil.vertSlidesDownI * LiftUtil.vertSlideintegralSum) + (LiftUtil.vertSlidesA);
         verticalSlides(-output);
           LiftUtil.VertSlidesLastError = LiftUtil.vertSlidesError;
+    }
+
+    public void PIDresetintSum (double target){
+
+        LiftUtil.armIntegralSum = 0;
+        LiftUtil.vertSlideintegralSum = 0;
+        LiftUtil.horiSlideintegralSum = 0;
+
     }
 
     /**
