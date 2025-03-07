@@ -26,7 +26,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class RedSpicemen extends LinearOpMode {
 
 
-    public static double iterationTime = .13;
+    public static double iterationTime = .25;
     public static double clawClosedPos = .55;
 
     public static double armPos = 0.265;
@@ -37,7 +37,7 @@ public class RedSpicemen extends LinearOpMode {
     public static double clawRight = .9;
     public static double preScore = 0.15;
     public static double postScore = 0.01;
-    public static double pickUp = 0.35;
+    public static double pickUp = 0.37;
 
     public static double speed = 0;
 
@@ -113,7 +113,7 @@ public class RedSpicemen extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
                 ElapsedTime timer = new ElapsedTime();
-                while (timer.seconds() < 3) {
+                while (timer.seconds() < 2) {
                     double currentPos = (leftThing.getCurrentPosition());
                     LiftUtil.AutoVertSlidesError = LiftUtil.target - currentPos;
                     LiftUtil.AutoVertSlideintegralSum += LiftUtil.vertSlidesError;
@@ -137,7 +137,7 @@ public class RedSpicemen extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet){
                 time.reset();
                 while (time.seconds()< iterationTime ){
-                   verticalSlides(-.5);
+                   verticalSlides(.5);
                 }
                 leftThing.setPower(0);
                 rightThing.setPower(0);
@@ -282,15 +282,42 @@ public class RedSpicemen extends LinearOpMode {
                 .setTangent(Math.PI)
                 .lineToX(0)
                 .setTangent(Math.PI/2)
-                .lineToY(-25)
+                .lineToY(-30)
                 .stopAndAdd(arm.armPreScoring())
                 .waitSeconds(1)
+                .stopAndAdd(slide.slideUp())
+//                .stopAndAdd(arm.armPostScoring())
+                .waitSeconds(.5)
+                .stopAndAdd(claw.openClaw())
+                .waitSeconds(1)
+                .lineToY(-50)
+                .stopAndAdd(slide.slideDown())
+                .setTangent(Math.PI)
+                .lineToX(30)
+                .setTangent(Math.PI/2)
+                .lineToY(-45)
+                .splineTo(new Vector2d(50, 0),Math.PI/2)
+                .lineToY(-50)
+                .lineToY(-30)
+                .splineTo(new Vector2d(56, -5),Math.PI/2)
+                .lineToY(-50)
+                .lineToY(-30)
+                .splineTo(new Vector2d(64,-5),Math.PI/2)
+                .setTangent(Math.PI/2)
+                .lineToY(-58)
+                .stopAndAdd(arm.armPickUp())
+                .waitSeconds(1)
+                .lineToY(-60)
+                .stopAndAdd(claw.closeClaw())
+                .waitSeconds(1)
+                //untested cause slides died
+                .stopAndAdd(arm.armPreScoring())
+                .strafeTo(new Vector2d(0,-30))
                 .stopAndAdd(slide.slideUp())
                 .stopAndAdd(arm.armPostScoring())
                 .waitSeconds(.5)
                 .stopAndAdd(claw.openClaw())
                 .waitSeconds(1)
-                .lineToY(-50)
 ;
         //grab spec
 //                .strafeTo(new Vector2d(65,-54))
