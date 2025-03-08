@@ -134,18 +134,14 @@ public class RedSpicemen extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
                 ElapsedTime timer = new ElapsedTime();
+                while(timer.seconds() < 2) {
                     double currentPos = (leftThing.getCurrentPosition());
                     LiftUtil.AutoVertSlidesError = LiftUtil.target - currentPos;
                     LiftUtil.AutoVertSlideintegralSum += LiftUtil.vertSlidesError;
                     output = (LiftUtil.AutoVertSlidesUpP * LiftUtil.AutoVertSlidesError) + (LiftUtil.AutoVertSlidesUpI * LiftUtil.AutoVertSlideintegralSum) + (LiftUtil.AutoVertSlidesUpD) + LiftUtil.AutoVertSlidesA;
                     verticalSlides(-output);
                     LiftUtil.AutoVertSlidesLastError = LiftUtil.AutoVertSlidesError;
-                    telemetry.addData("target",LiftUtil.target);
-                    telemetry.addData("error",LiftUtil.AutoVertSlidesError);
-                    telemetry.addData("Output", output());
-                    telemetry.addData("x",vals());
-                    telemetry.addData("y",currentPos);
-                    telemetry.update();
+                }
                 reset();
                 return false;
             }
@@ -178,7 +174,7 @@ public class RedSpicemen extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
                 time.reset();
-                while (time.seconds()< iterationTime ){
+                while (time.seconds()< iterationTime && leftThing.getCurrentPosition()>=200){
                    verticalSlides(1);
                 }
                 leftThing.setPower(0);
@@ -329,6 +325,33 @@ public class RedSpicemen extends LinearOpMode {
         public Action counterclockwise(){return new Arm.counterclockwise();}
 
     }
+    public class Intake{
+        public double up = .6;
+        public double down =.38;
+        public ServoImplEx leftIntake, rightIntake;
+        public Intake(HardwareMap hardwareMap){
+            leftIntake = hardwareMap.get(ServoImplEx.class, "leftIntake");
+            rightIntake = hardwareMap.get(ServoImplEx.class, "rightIntake");
+        }
+        public class intakeUp implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket){
+                leftIntake.setPosition(up);
+                rightIntake.setPosition(up);
+                return false;
+            }
+        }
+        public class intakeDown implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket){
+                leftIntake.setPosition(down);
+                rightIntake.setPosition(down);
+                return false;
+            }
+        }
+        public Action intakeUp(){return new intakeUp();}
+        public Action intakeDown(){return new intakeDown();}
+    }
 
 
 
@@ -339,13 +362,14 @@ public class RedSpicemen extends LinearOpMode {
         Slides slide = new Slides(hardwareMap);
         Arm arm = new Arm(hardwareMap);
         Claw claw = new Claw(hardwareMap);
+        Intake intake = new Intake(hardwareMap);
 
         // vision here that outputs position
         TrajectoryActionBuilder traj1 = drive.actionBuilder(drive.pose)
-                .afterDisp(5,arm.armPreScoring())
-                .splineTo(new Vector2d(0, -29),Math.PI/2);
+//                .afterDisp(5,arm.armPreScoring())
+                .splineTo(new Vector2d(0, -30),Math.PI/2);
 
-        TrajectoryActionBuilder traj2 = drive.actionBuilder(new Pose2d(0, -29, Math.PI/2))
+        TrajectoryActionBuilder traj2 = drive.actionBuilder(new Pose2d(0, -30, Math.PI/2))
                 .stopAndAdd(arm.armPostScoring())
                 .waitSeconds(.3)
                 .stopAndAdd(claw.openClaw())
@@ -391,6 +415,7 @@ public class RedSpicemen extends LinearOpMode {
 
         // actions that need to happen on init; for instance, a claw tightening.
         Actions.runBlocking(arm.armInit());
+        Actions.runBlocking(intake.intakeUp());
         Actions.runBlocking(slide.horizontalSlidesIN());
         Actions.runBlocking(arm.counterclockwise());
         Actions.runBlocking(claw.openClaw());

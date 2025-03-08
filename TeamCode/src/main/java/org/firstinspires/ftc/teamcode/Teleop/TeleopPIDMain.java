@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opM
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Config.robot;
@@ -28,7 +29,9 @@ public class TeleopPIDMain extends LinearOpMode {
     public static double clawClosed = .57;
 
     public static long CYCLE_MS = 50;
+    public static boolean isClosed = false;
     public OpenCvCamera cam;
+
 
     @Override
     public void runOpMode() {
@@ -56,13 +59,13 @@ public class TeleopPIDMain extends LinearOpMode {
 
             //bumper & trigger controls
 
-            if (gamepad2.x) {
-                robo.claw(clawClosed );
-            } else {
+            if (gamepad2.b) {
                 robo.claw(clawOpen);
+            } else if (gamepad2.x) {
+                robo.claw(clawClosed);
             }
 
-            if (gamepad2.right_trigger > 0.2) {
+            if (gamepad1.right_trigger > 0.2) {
                 robo.setMotorPowers(lf * 0.2, lb * 0.2, rf * 0.2, rb * 0.2);
             } else {
                 robo.setMotorPowers(lf, lb, rf, rb);
@@ -87,6 +90,11 @@ public class TeleopPIDMain extends LinearOpMode {
                 robo.horizontalSlides(-0.75);
             } else {
                 robo.verticalSlides(0);
+            }
+            if (gamepad2.a){
+                robo.setPos(.05);
+            } else if (gamepad2.y){
+                robo.setPos(.35);
             }
 
             if (gamepad2.right_bumper){

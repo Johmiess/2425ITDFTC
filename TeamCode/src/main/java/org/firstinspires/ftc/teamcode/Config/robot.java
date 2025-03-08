@@ -90,7 +90,7 @@ public class  robot {
     public double down = .1;
     public double up = .45;
     public double intakeUp = .6;
-    public double intakeDown = .4;
+    public double intakeDown = .38;
 
 
     public void init() {
@@ -286,21 +286,21 @@ public class  robot {
     }
 
     public void intakeUp(){
-        leftIntake.setPosition(intakeUp);
+        leftIntake.setPosition(intakeUp+.01);
         rightIntake.setPosition(intakeUp);
     }
 
     public void intakeDown(){
-        leftIntake.setPosition(intakeDown);
+        leftIntake.setPosition(intakeDown+.01);
         rightIntake.setPosition(intakeDown);
     }
 
     public void intakeIn(){
-        intake.setPower(.7);
+        intake.setPower(.5);
     }
 
     public void intakeOut(){
-        intake.setPower(-.7);
+        intake.setPower(-.5);
     }
 
 

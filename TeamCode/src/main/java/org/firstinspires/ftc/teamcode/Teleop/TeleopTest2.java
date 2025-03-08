@@ -41,7 +41,7 @@ public class TeleopTest2 extends LinearOpMode {
                 robo.setPos(armUp);
             }
             if (gamepad1.x) {
-                robo.vertSlidesPIDup(LiftUtil.target);
+                robo.vertSlidesPIDup(LiftUtil.downTarget);
             }
             else if (gamepad1.y){
                 robo.vertSlidesPIDdown(LiftUtil.downTarget);
