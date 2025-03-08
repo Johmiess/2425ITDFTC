@@ -72,11 +72,10 @@ public class TeleopPIDMain extends LinearOpMode {
             // x,y,a,b
 
             if (gamepad1.x) {
-
+//                robo.vertSlidesPIDup(12400);
                 robo.verticalSlides(1);
             }
             else if (gamepad1.y){
-
                 robo.verticalSlides (-1);
             } else {
                 robo.horizontalSlides(0);

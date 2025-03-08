@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -178,7 +179,7 @@ public class RedSpicemen extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet){
                 time.reset();
                 while (time.seconds()< iterationTime ){
-                   verticalSlides(.5);
+                   verticalSlides(1);
                 }
                 leftThing.setPower(0);
                 rightThing.setPower(0);
@@ -340,25 +341,11 @@ public class RedSpicemen extends LinearOpMode {
         Claw claw = new Claw(hardwareMap);
 
         // vision here that outputs position
+        TrajectoryActionBuilder traj1 = drive.actionBuilder(drive.pose)
+                .afterDisp(5,arm.armPreScoring())
+                .splineTo(new Vector2d(0, -29),Math.PI/2);
 
-        TrajectoryActionBuilder temp = drive.actionBuilder(drive.pose)
-                /*.stopAndAdd(arm.armPreScoring())
-              .strafeTo(new Vector2d(10,-24))
-              .stopAndAdd(slide.slideUp())
-              .waitSeconds(1)
-              .stopAndAdd(arm.armPostScoring())
-              .waitSeconds(1)
-              .stopAndAdd(claw.openClaw())
-              .waitSeconds(1)
-              .stopAndAdd(arm.armPickUp())
-              .waitSeconds(.5)
-              .setTangent(-Math.PI/2)
-              .afterDisp(50, slide.slideDown())
-              .strafeTo(new Vector2d(24,-54))
-              .setTangent(-Math.PI/2)
-              .lineToY(-52)*/
-                .afterDisp(5, slide.slideUp())
-                .splineTo(new Vector2d(0, tunerVAL1),Math.PI/2)
+        TrajectoryActionBuilder traj2 = drive.actionBuilder(new Pose2d(0, -29, Math.PI/2))
                 .stopAndAdd(arm.armPostScoring())
                 .waitSeconds(.3)
                 .stopAndAdd(claw.openClaw())
@@ -380,80 +367,24 @@ public class RedSpicemen extends LinearOpMode {
                 .stopAndAdd(arm.armPickUp())
                 .strafeTo(new Vector2d(47,-62))
                 .stopAndAdd(claw.closeClaw())
-                .waitSeconds(1)
+                .waitSeconds(.5)
                 .stopAndAdd(arm.armPreScoring())
-                .strafeTo(new Vector2d(3   ,-30))
-                .stopAndAdd(arm.counterclockwise())
-                .stopAndAdd(slide.slideUp())
-                .waitSeconds(1)
+                .waitSeconds(.5)
+                .stopAndAdd(arm.counterclockwise());
+
+
+        TrajectoryActionBuilder traj3 = drive.actionBuilder(new Pose2d(47, -62, Math.PI/2))
+                .strafeTo(new Vector2d(3,-29));
+
+        TrajectoryActionBuilder traj4 = drive.actionBuilder(new Pose2d(3,-30,Math.PI/2))
                 .stopAndAdd(arm.armPostScoring())
                 .waitSeconds(1)
-                .stopAndAdd(arm.clockwise())
                 .stopAndAdd(claw.openClaw())
+                .lineToY(-50)
                 .stopAndAdd(slide.slideDown())
                 .stopAndAdd(arm.armPickUp());
-//                .strafeTo(new Vector2d(47,-62))
-//                .stopAndAdd(claw.closeClaw())
-//                .waitSeconds(1)
-//                .stopAndAdd(arm.counterclockwise())
-//                .strafeTo(new Vector2d(5   ,-30))
-//                .stopAndAdd(slide.slideUp())
-//                .waitSeconds(1)
-//                .stopAndAdd(arm.armPostScoring())
-//                .waitSeconds(1)
-//                .stopAndAdd(arm.clockwise())
-//                .stopAndAdd(claw.openClaw())
-//                .waitSeconds(1)
-//                .stopAndAdd(slide.slideDown())
-//                .stopAndAdd(arm.armPickUp())
-//                .strafeTo(new Vector2d(47,-62))
-//                .stopAndAdd(claw.closeClaw())
-//                .waitSeconds(1)
-//                .stopAndAdd(arm.counterclockwise())
-//                .strafeTo(new Vector2d(7 ,-30))
-//                .stopAndAdd(slide.slideUp())
-//                .waitSeconds(1)
-//                .stopAndAdd(arm.armPostScoring())
-//                .stopAndAdd(arm.clockwise())
-//                .stopAndAdd(claw.openClaw())
-//                .waitSeconds(1)
-//                .stopAndAdd(slide.slideDown())
-//                .stopAndAdd(arm.armPickUp());
-        //grab spec
-//                .strafeTo(new Vector2d(65,-54))
-//                .waitSeconds(2)
-//                .stopAndAdd(claw.closeClaw());
-/*                .stopAndAdd(arm.armPreScoring())
-                .afterDisp(50, slide.slideUp() )
-                .strafeTo(new Vector2d(7,-27))
-//                .stopAndAdd(arm.armPostScoring())
-                .stopAndAdd(claw.openClaw())
-                .waitSeconds(.5)
-                .stopAndAdd(arm.armPickUp())
-                .afterDisp(50, slide.slideDown() )
-                .strafeTo(new Vector2d(65,-54))
-                .waitSeconds(1)
-                .stopAndAdd(claw.closeClaw())
-                .stopAndAdd(arm.armPreScoring())
-//                .stopAndAdd(arm.armPostScoring())
-                .afterDisp(50, slide.slideUp() )
-                .strafeTo(new Vector2d(2,-27))
-                .stopAndAdd(arm.armPreScoring());*/
 
 
-
-
-
-
-
-
-
-
-        TrajectoryActionBuilder score = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(90)))
-                .strafeTo(new Vector2d(1,1))
-                .stopAndAdd(arm.counterclockwise())
-                .stopAndAdd(arm.clockwise())
-                .lineToY(-30);
 
         // actions that need to happen on init; for instance, a claw tightening.
         Actions.runBlocking(arm.armInit());
@@ -485,11 +416,28 @@ public class RedSpicemen extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-        Action traj = temp.build();
+        Action trajectory1 = traj1.build();
+        Action trajectory2 = traj2.build();
+        Action trajectory3 = traj3.build();
+        Action trajectory4 = traj4.build();
+
 
         Actions.runBlocking(
                 new SequentialAction(
-                        traj
+                        new ParallelAction(
+                                trajectory1,
+                                new SequentialAction(
+                                        slide.slideUp()
+                                )
+                        ),
+                        trajectory2,
+                        new ParallelAction(
+                                trajectory3,
+                                new SequentialAction(
+                                        slide.slideUp()
+                                )
+                        ),
+                        trajectory4
                 )
         );
     }

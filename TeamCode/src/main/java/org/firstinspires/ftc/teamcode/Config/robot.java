@@ -89,8 +89,8 @@ public class  robot {
     public double open_pos = 0.10;
     public double down = .1;
     public double up = .45;
-    public double intakeUp = .57;
-    public double intakeDown = .37;
+    public double intakeUp = .6;
+    public double intakeDown = .4;
 
 
     public void init() {
