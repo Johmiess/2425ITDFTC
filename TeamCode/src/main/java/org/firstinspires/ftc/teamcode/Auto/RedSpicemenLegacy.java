@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.InstantAction;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -24,8 +22,8 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
-@Autonomous(name = "ALPHA VERSIONR: RedSpicemen", group = "Autonomous")
-public class RedSpiceMenAlpha extends LinearOpMode {
+@Autonomous(name = "LEGACY:RedSpicemen", group = "Autonomous")
+public class RedSpicemenLegacy extends LinearOpMode {
 
     public static double SlideTIME = .5;
     public static double tunerVAL1 = -29;
@@ -125,7 +123,6 @@ public class RedSpiceMenAlpha extends LinearOpMode {
             return leftThing.getCurrentPosition();
         }
 
-
         public double output(){
             return output;
         }
@@ -136,12 +133,21 @@ public class RedSpiceMenAlpha extends LinearOpMode {
         public class vertSlideUp implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
+                ElapsedTime timer = new ElapsedTime();
+                while (timer.seconds() < 0.5 ) {
                     double currentPos = (leftThing.getCurrentPosition());
                     LiftUtil.AutoVertSlidesError = LiftUtil.target - currentPos;
                     LiftUtil.AutoVertSlideintegralSum += LiftUtil.vertSlidesError;
                     output = (LiftUtil.AutoVertSlidesUpP * LiftUtil.AutoVertSlidesError) + (LiftUtil.AutoVertSlidesUpI * LiftUtil.AutoVertSlideintegralSum) + (LiftUtil.AutoVertSlidesUpD) + LiftUtil.AutoVertSlidesA;
                     verticalSlides(-output);
                     LiftUtil.AutoVertSlidesLastError = LiftUtil.AutoVertSlidesError;
+                    telemetry.addData("target", LiftUtil.target);
+                    telemetry.addData("error", LiftUtil.AutoVertSlidesError);
+                    telemetry.addData("Output", output());
+                    telemetry.addData("x", vals());
+                    telemetry.addData("y", currentPos);
+                    telemetry.update();
+                }
                 reset();
                 return false;
             }
@@ -151,7 +157,7 @@ public class RedSpiceMenAlpha extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
                 ElapsedTime timer = new ElapsedTime();
-                while (timer.seconds() < 2) {
+                while (timer.seconds() < 4) {
                     double currentPos = (leftThing.getCurrentPosition());
                     LiftUtil.AutoVertSlidesError = LiftUtil.downTarget - currentPos;
                     LiftUtil.AutoVertSlideintegralSum += LiftUtil.vertSlidesError;
@@ -174,8 +180,8 @@ public class RedSpiceMenAlpha extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
                 time.reset();
-                while (time.seconds()< iterationTime && leftThing.getCurrentPosition()>=200){
-                    verticalSlides(1);
+                while (time.seconds()< iterationTime ){
+                    verticalSlides(.5);
                 }
                 leftThing.setPower(0);
                 rightThing.setPower(0);
@@ -213,12 +219,9 @@ public class RedSpiceMenAlpha extends LinearOpMode {
 
 
 
-        public Action slideUp() {return new Slides.vertSlideUp();}
+        public Action slideUp() {return new vertSlideUp();}
 
         public Action slideDown() {return new Slides.slideDown();}
-        public Action setTarget(int target) {
-            return new InstantAction(() -> vertSlideTarget = target);
-        }
 
         public Action slideDownPID() {return new Slides.slideDownPID();}
         public Action horizontalSlidesIN() {return new Slides.horizontalSlidesIN();}
@@ -328,33 +331,6 @@ public class RedSpiceMenAlpha extends LinearOpMode {
         public Action counterclockwise(){return new Arm.counterclockwise();}
 
     }
-    public class Intake{
-        public double up = .6;
-        public double down =.38;
-        public ServoImplEx leftIntake, rightIntake;
-        public Intake(HardwareMap hardwareMap){
-            leftIntake = hardwareMap.get(ServoImplEx.class, "leftIntake");
-            rightIntake = hardwareMap.get(ServoImplEx.class, "rightIntake");
-        }
-        public class intakeUp implements Action{
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket){
-                leftIntake.setPosition(up);
-                rightIntake.setPosition(up);
-                return false;
-            }
-        }
-        public class intakeDown implements Action{
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket){
-                leftIntake.setPosition(down);
-                rightIntake.setPosition(down);
-                return false;
-            }
-        }
-        public Action intakeUp(){return new intakeUp();}
-        public Action intakeDown(){return new intakeDown();}
-    }
 
 
 
@@ -365,16 +341,29 @@ public class RedSpiceMenAlpha extends LinearOpMode {
         Slides slide = new Slides(hardwareMap);
         Arm arm = new Arm(hardwareMap);
         Claw claw = new Claw(hardwareMap);
-        Intake intake = new Intake(hardwareMap);
 
         // vision here that outputs position
-        TrajectoryActionBuilder traj1 = drive.actionBuilder(drive.pose)
-//                .afterDisp(5,arm.armPreScoring())
-                .splineTo(new Vector2d(0, -30),Math.PI/2);
 
-        TrajectoryActionBuilder traj2 = drive.actionBuilder(new Pose2d(0, -30, Math.PI/2))
+        TrajectoryActionBuilder temp = drive.actionBuilder(drive.pose)
+                /*.stopAndAdd(arm.armPreScoring())
+              .strafeTo(new Vector2d(10,-24))
+              .stopAndAdd(slide.slideUp())
+              .waitSeconds(1)
+              .stopAndAdd(arm.armPostScoring())
+              .waitSeconds(1)
+              .stopAndAdd(claw.openClaw())
+              .waitSeconds(1)
+              .stopAndAdd(arm.armPickUp())
+              .waitSeconds(.5)
+              .setTangent(-Math.PI/2)
+              .afterDisp(50, slide.slideDown())
+              .strafeTo(new Vector2d(24,-54))
+              .setTangent(-Math.PI/2)
+              .lineToY(-52)*/
+                .splineTo(new Vector2d(0, tunerVAL1),Math.PI/2)
+                .stopAndAdd(slide.slideUp())
                 .stopAndAdd(arm.armPostScoring())
-                .waitSeconds(.3)
+                .waitSeconds(.2)
                 .stopAndAdd(claw.openClaw())
                 .lineToY(-50)
                 .stopAndAdd(slide.slideDown())
@@ -394,31 +383,83 @@ public class RedSpiceMenAlpha extends LinearOpMode {
                 .stopAndAdd(arm.armPickUp())
                 .strafeTo(new Vector2d(47,-62))
                 .stopAndAdd(claw.closeClaw())
-                .waitSeconds(.5)
+                .waitSeconds(1)
                 .stopAndAdd(arm.armPreScoring())
-                .waitSeconds(.5)
-                .stopAndAdd(arm.counterclockwise());
-
-
-        TrajectoryActionBuilder traj3 = drive.actionBuilder(new Pose2d(47, -62, Math.PI/2))
-                .strafeTo(new Vector2d(3,-25));
-
-        TrajectoryActionBuilder traj4 = drive.actionBuilder(new Pose2d(3,-25,Math.PI/2))
+                .strafeTo(new Vector2d(3   ,-30))
+                .stopAndAdd(arm.counterclockwise())
+                .stopAndAdd(slide.slideUp())
+                .waitSeconds(1)
                 .stopAndAdd(arm.armPostScoring())
                 .waitSeconds(1)
-                .stopAndAdd(claw.openClaw())
-                .lineToY(-60)
-                .stopAndAdd(slide.slideDown())
                 .stopAndAdd(arm.clockwise())
+                .stopAndAdd(claw.openClaw())
+                .stopAndAdd(slide.slideDown())
+                .stopAndAdd(arm.armPickUp());
+//                .strafeTo(new Vector2d(47,-62))
+//                .stopAndAdd(claw.closeClaw())
+//                .waitSeconds(1)
+//                .stopAndAdd(arm.counterclockwise())
+//                .strafeTo(new Vector2d(5   ,-30))
+//                .stopAndAdd(slide.slideUp())
+//                .waitSeconds(1)
+//                .stopAndAdd(arm.armPostScoring())
+//                .waitSeconds(1)
+//                .stopAndAdd(arm.clockwise())
+//                .stopAndAdd(claw.openClaw())
+//                .waitSeconds(1)
+//                .stopAndAdd(slide.slideDown())
+//                .stopAndAdd(arm.armPickUp())
+//                .strafeTo(new Vector2d(47,-62))
+//                .stopAndAdd(claw.closeClaw())
+//                .waitSeconds(1)
+//                .stopAndAdd(arm.counterclockwise())
+//                .strafeTo(new Vector2d(7 ,-30))
+//                .stopAndAdd(slide.slideUp())
+//                .waitSeconds(1)
+//                .stopAndAdd(arm.armPostScoring())
+//                .stopAndAdd(arm.clockwise())
+//                .stopAndAdd(claw.openClaw())
+//                .waitSeconds(1)
+//                .stopAndAdd(slide.slideDown())
+//                .stopAndAdd(arm.armPickUp());
+        //grab spec
+//                .strafeTo(new Vector2d(65,-54))
+//                .waitSeconds(2)
+//                .stopAndAdd(claw.closeClaw());
+/*                .stopAndAdd(arm.armPreScoring())
+                .afterDisp(50, slide.slideUp() )
+                .strafeTo(new Vector2d(7,-27))
+//                .stopAndAdd(arm.armPostScoring())
+                .stopAndAdd(claw.openClaw())
+                .waitSeconds(.5)
                 .stopAndAdd(arm.armPickUp())
-                .setTangent(Math.PI)
-                .lineToX(47);
+                .afterDisp(50, slide.slideDown() )
+                .strafeTo(new Vector2d(65,-54))
+                .waitSeconds(1)
+                .stopAndAdd(claw.closeClaw())
+                .stopAndAdd(arm.armPreScoring())
+//                .stopAndAdd(arm.armPostScoring())
+                .afterDisp(50, slide.slideUp() )
+                .strafeTo(new Vector2d(2,-27))
+                .stopAndAdd(arm.armPreScoring());*/
 
 
+
+
+
+
+
+
+
+
+        TrajectoryActionBuilder score = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(90)))
+                .strafeTo(new Vector2d(1,1))
+                .stopAndAdd(arm.counterclockwise())
+                .stopAndAdd(arm.clockwise())
+                .lineToY(-30);
 
         // actions that need to happen on init; for instance, a claw tightening.
         Actions.runBlocking(arm.armInit());
-        Actions.runBlocking(intake.intakeUp());
         Actions.runBlocking(slide.horizontalSlidesIN());
         Actions.runBlocking(arm.counterclockwise());
         Actions.runBlocking(claw.openClaw());
@@ -447,31 +488,11 @@ public class RedSpiceMenAlpha extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-        Action trajectory1 = traj1.build();
-        Action trajectory2 = traj2.build();
-        Action trajectory3 = traj3.build();
-        Action trajectory4 = traj4.build();
-
+        Action traj = temp.build();
 
         Actions.runBlocking(
-                new ParallelAction(
-                        slide.slideUp(),
                 new SequentialAction(
-                        new ParallelAction(
-                                trajectory1,
-                                new SequentialAction(
-                                        slide.setTarget(LiftUtil.target)
-                                )
-                        ),
-                        trajectory2,
-                        new ParallelAction(
-                                trajectory3,
-                                new SequentialAction(
-                                        slide.setTarget(LiftUtil.target)
-                                )
-                        ),
-                        trajectory4
-                )
+                        traj
                 )
         );
     }
