@@ -136,10 +136,11 @@ public class RedSpiceMenAlpha extends LinearOpMode {
         public class vertSlideUp implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
-                time.reset();
-                while (time.seconds()<0.5) {
+                ElapsedTime timer = new ElapsedTime();
+                while (timer.seconds() < 0.5) {
+
                     double currentPos = (leftThing.getCurrentPosition());
-                    LiftUtil.AutoVertSlidesError = LiftUtil.target - currentPos;
+                    LiftUtil.AutoVertSlidesError = LiftUtil.target -1;
                     LiftUtil.AutoVertSlideintegralSum += LiftUtil.vertSlidesError;
                     output = (LiftUtil.AutoVertSlidesUpP * LiftUtil.AutoVertSlidesError) + (LiftUtil.AutoVertSlidesUpI * LiftUtil.AutoVertSlideintegralSum) + (LiftUtil.AutoVertSlidesUpD) + LiftUtil.AutoVertSlidesA;
                     verticalSlides(-output);

@@ -376,37 +376,73 @@ public class RedSpicemen extends LinearOpMode {
                 .setTangent(Math.PI/2)
                 .lineToY(-45)
                 .splineTo(new Vector2d(50, 0),Math.PI/2)
-                .lineToY(-50)
+                .lineToY(-52)
                 .lineToY(-30)
                 .splineTo(new Vector2d(56, -5),Math.PI/2)
                 .lineToY(-50)
-                .lineToY(-30)
-                .splineTo(new Vector2d(66,-5),Math.PI/2)
-                .setTangent(Math.PI/2)
-                .lineToY(-50)
                 .stopAndAdd(arm.armPickUp())
-                .strafeTo(new Vector2d(47,-62))
+                .strafeTo(new Vector2d(48,-62))
+                .waitSeconds(.2)
                 .stopAndAdd(claw.closeClaw())
-                .waitSeconds(.5)
+                .waitSeconds(.3)
                 .stopAndAdd(arm.armPreScoring())
-                .waitSeconds(.5)
                 .stopAndAdd(arm.counterclockwise());
 
 
-        TrajectoryActionBuilder traj3 = drive.actionBuilder(new Pose2d(47, -62, Math.PI/2))
+        TrajectoryActionBuilder traj3 = drive.actionBuilder(new Pose2d(48, -62, Math.PI/2))
                 .strafeTo(new Vector2d(3,-25));
 
         TrajectoryActionBuilder traj4 = drive.actionBuilder(new Pose2d(3,-25,Math.PI/2))
+                .lineToY(-27)
                 .stopAndAdd(arm.armPostScoring())
-                .waitSeconds(1)
+                .waitSeconds(.3)
                 .stopAndAdd(claw.openClaw())
-                .lineToY(-60)
+                .lineToY(-40)
                 .stopAndAdd(slide.slideDown())
                 .stopAndAdd(arm.clockwise())
                 .stopAndAdd(arm.armPickUp())
-                .setTangent(Math.PI)
-                .lineToX(47);
+                .strafeTo(new Vector2d(48,-58))
+                .setTangent(Math.PI/2)
+                .lineToY(-60)
+                .stopAndAdd(claw.closeClaw())
+                .waitSeconds(.3)
+                .stopAndAdd(arm.armPreScoring())
+                .stopAndAdd(arm.counterclockwise());
 
+        TrajectoryActionBuilder traj5 = drive.actionBuilder(new Pose2d(48,-60,Math.PI/2))
+                .strafeTo(new Vector2d(-3,-25));
+
+
+        TrajectoryActionBuilder traj6 = drive.actionBuilder(new Pose2d(-3,-25,Math.PI/2))
+                .lineToY(-27)
+                .stopAndAdd(arm.armPostScoring())
+                .waitSeconds(.3)
+                .stopAndAdd(claw.openClaw())
+                .lineToY(-40)
+                .stopAndAdd(slide.slideDown())
+                .stopAndAdd(arm.clockwise())
+                .stopAndAdd(arm.armPickUp())
+                .strafeTo(new Vector2d(48,-58))
+                .setTangent(Math.PI/2)
+                .lineToY(-60)
+                .stopAndAdd(claw.closeClaw())
+                .waitSeconds(.3)
+                .stopAndAdd(arm.armPreScoring())
+                .stopAndAdd(arm.counterclockwise());
+
+        TrajectoryActionBuilder traj7 = drive.actionBuilder(new Pose2d(48, -60,Math.PI/2))
+                .strafeTo(new Vector2d(6,-25));
+
+        TrajectoryActionBuilder traj8= drive.actionBuilder(new Pose2d(6, -25, Math.PI/2))
+                .lineToY(-27)
+                .stopAndAdd(arm.armPostScoring())
+                .waitSeconds(.3)
+                .stopAndAdd(claw.openClaw())
+                .lineToY(-40)
+                .stopAndAdd(slide.slideDown())
+                .stopAndAdd(arm.clockwise())
+                .stopAndAdd(arm.armPickUp())
+                        .waitSeconds(1);
 
 
         // actions that need to happen on init; for instance, a claw tightening.
@@ -444,6 +480,10 @@ public class RedSpicemen extends LinearOpMode {
         Action trajectory2 = traj2.build();
         Action trajectory3 = traj3.build();
         Action trajectory4 = traj4.build();
+        Action trajectory5 = traj5.build();
+        Action trajectory6 = traj6.build();
+        Action trajectory7 = traj7.build();
+        Action trajectory8 = traj8.build();
 
 
         Actions.runBlocking(
@@ -461,7 +501,21 @@ public class RedSpicemen extends LinearOpMode {
                                         slide.slideUp()
                                 )
                         ),
-                        trajectory4
+                        trajectory4,
+                        new ParallelAction(
+                                trajectory5,
+                                new SequentialAction(
+                                        slide.slideUp()
+                                )
+                        ),
+                        trajectory6,
+                        new ParallelAction(
+                                trajectory7,
+                                new SequentialAction(
+                                        slide.slideUp()
+                                )
+                        ),
+                        trajectory8
                 )
         );
     }
