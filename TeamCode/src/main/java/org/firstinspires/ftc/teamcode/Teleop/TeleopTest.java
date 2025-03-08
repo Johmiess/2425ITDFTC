@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import org.firstinspires.ftc.teamcode.Config.robot;
 
 @Config
-@TeleOp(name= "teleop")
+@TeleOp(name= "TEST: ARM")
 public class TeleopTest extends LinearOpMode {
     /**
      * TESTING TELEOP PLAYGROUND:

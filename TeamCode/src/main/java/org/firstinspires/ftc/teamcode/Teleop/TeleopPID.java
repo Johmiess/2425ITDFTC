@@ -13,7 +13,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 
 @Config
-@TeleOp(name="TELEOP PID")
+@TeleOp(name="(TESTS ONLY) Teleop ")
 public class TeleopPID extends LinearOpMode {
     robot robo;
 

@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Config.LiftUtil;
 import org.firstinspires.ftc.teamcode.Config.robot;
 
 @Config
-@TeleOp(name="TELEOP TEST 2")
+@TeleOp(name="TEST: CLAW AND PID")
 public class TeleopTest2 extends LinearOpMode {
     public static double open = .3;
     public static double close = .55;
