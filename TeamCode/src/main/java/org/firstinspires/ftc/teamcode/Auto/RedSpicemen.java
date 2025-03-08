@@ -134,13 +134,15 @@ public class RedSpicemen extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
                 ElapsedTime timer = new ElapsedTime();
-                while(timer.seconds() < 2) {
+                while(timer.seconds() < .5) {
                     double currentPos = (leftThing.getCurrentPosition());
                     LiftUtil.AutoVertSlidesError = LiftUtil.target - currentPos;
                     LiftUtil.AutoVertSlideintegralSum += LiftUtil.vertSlidesError;
                     output = (LiftUtil.AutoVertSlidesUpP * LiftUtil.AutoVertSlidesError) + (LiftUtil.AutoVertSlidesUpI * LiftUtil.AutoVertSlideintegralSum) + (LiftUtil.AutoVertSlidesUpD) + LiftUtil.AutoVertSlidesA;
                     verticalSlides(-output);
                     LiftUtil.AutoVertSlidesLastError = LiftUtil.AutoVertSlidesError;
+                    telemetry.addData("pos",currentPos);
+                    telemetry.update();
                 }
                 reset();
                 return false;
@@ -272,8 +274,6 @@ public class RedSpicemen extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 leftAxon.setPosition(armPos);
                 rightAxon.setPosition(armPos);
-                telemetry.addData("LA", leftAxon.getPosition());
-                telemetry.addData("RA", rightAxon.getPosition());
                 telemetry.update();
 
                 return false;
@@ -285,8 +285,6 @@ public class RedSpicemen extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 leftAxon.setPosition(postScore);
                 rightAxon.setPosition(postScore);
-                telemetry.addData("LA", leftAxon.getPosition());
-                telemetry.addData("RA", rightAxon.getPosition());
                 telemetry.update();
 
                 return false;
@@ -297,8 +295,6 @@ public class RedSpicemen extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 leftAxon.setPosition(preScore);
                 rightAxon.setPosition(preScore);
-                telemetry.addData("LA", leftAxon.getPosition());
-                telemetry.addData("RA", rightAxon.getPosition());
                 telemetry.update();
 
                 return false;
