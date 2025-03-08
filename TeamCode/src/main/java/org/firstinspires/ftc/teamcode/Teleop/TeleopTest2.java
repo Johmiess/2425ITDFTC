@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.Config.robot;
 public class TeleopTest2 extends LinearOpMode {
     public static double open = .3;
     public static double close = .55;
-    public static double armUp = 0;
-    public static double armDown = 0;
+    public static double armUp = 0.258;
+    public static double armDown = 0.37;
     public static double vertUp = 0;
     public static double vertDown = 0;
 

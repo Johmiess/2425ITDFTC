@@ -19,7 +19,7 @@ public class TeleopPIDMain extends LinearOpMode {
     double x, y, rx, lf, lb, rf, rb, denominator = 0;
 
     public static double power = 0.75;
-    public static double right =.9;
+    public static double right =0.86;
     public static double left = .23;
     public static double low = 0;
     public static double high = 0;
@@ -77,7 +77,7 @@ public class TeleopPIDMain extends LinearOpMode {
             }
             else if (gamepad1.y){
 
-                robo.verticalSlides(-1);
+                robo.verticalSlides (-1);
             } else {
                 robo.horizontalSlides(0);
             }

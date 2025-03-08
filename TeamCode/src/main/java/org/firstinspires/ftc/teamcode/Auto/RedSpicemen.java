@@ -25,19 +25,31 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name = "RedSpicemen", group = "Autonomous")
 public class RedSpicemen extends LinearOpMode {
 
+    public static double SlideTIME = .5;
+    public static double tunerVAL1 = -29;
+    public static double tunerVAL2 = 5;
+
+    public static double tunerVAL3 = 5;
+
+    public static double tunerVAL4 = 28;
+
+
 
     public static double iterationTime = .25;
+
+    public static double horizontalIterationTime = .2;
+
     public static double clawClosedPos = .55;
 
-    public static double armPos = 0.265;
+    public static double armPos = 0.25832;
 
 
     public static double clawOpenPos = .3;
     public static double clawLeft = .23;
-    public static double clawRight = .9;
-    public static double preScore = 0.15;
-    public static double postScore = 0.01;
-    public static double pickUp = 0.37;
+    public static double clawRight = 0.86;
+    public static double preScore = 0.258;
+    public static double postScore = 0.05;
+    public static double pickUp = 0.35;
 
     public static double speed = 0;
 
@@ -78,14 +90,17 @@ public class RedSpicemen extends LinearOpMode {
             return new Claw.OpenClaw();
         }
     }
-    public class VertSlide {
+
+    public class Slides {
         private DcMotorEx leftThing, rightThing;
         private ElapsedTime time;
 
         private double output;
 
 
-        public VertSlide(HardwareMap hardwareMap){
+
+
+        public Slides(HardwareMap hardwareMap){
             leftThing = hardwareMap.get(DcMotorEx.class, "leftThing");
             rightThing = hardwareMap.get(DcMotorEx.class, "rightThing");
             time = new ElapsedTime();
@@ -96,6 +111,11 @@ public class RedSpicemen extends LinearOpMode {
 
         public void verticalSlides(double speed) {
             leftThing.setPower(speed);
+            rightThing.setPower(speed);
+        }
+
+        public void horizontalSlides(double speed) {
+            leftThing.setPower(-speed);
             rightThing.setPower(speed);
         }
         public double vals(){
@@ -109,11 +129,10 @@ public class RedSpicemen extends LinearOpMode {
             LiftUtil.vertSlideintegralSum = 0;
             LiftUtil.horiSlideintegralSum = 0;
         }
-        public class slideUp implements Action{
+        public class vertSlideUp implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
                 ElapsedTime timer = new ElapsedTime();
-                while (timer.seconds() < 2) {
                     double currentPos = (leftThing.getCurrentPosition());
                     LiftUtil.AutoVertSlidesError = LiftUtil.target - currentPos;
                     LiftUtil.AutoVertSlideintegralSum += LiftUtil.vertSlidesError;
@@ -121,6 +140,28 @@ public class RedSpicemen extends LinearOpMode {
                     verticalSlides(-output);
                     LiftUtil.AutoVertSlidesLastError = LiftUtil.AutoVertSlidesError;
                     telemetry.addData("target",LiftUtil.target);
+                    telemetry.addData("error",LiftUtil.AutoVertSlidesError);
+                    telemetry.addData("Output", output());
+                    telemetry.addData("x",vals());
+                    telemetry.addData("y",currentPos);
+                    telemetry.update();
+                reset();
+                return false;
+            }
+        }
+
+        public class slideDownPID implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet){
+                ElapsedTime timer = new ElapsedTime();
+                while (timer.seconds() < 4) {
+                    double currentPos = (leftThing.getCurrentPosition());
+                    LiftUtil.AutoVertSlidesError = LiftUtil.downTarget - currentPos;
+                    LiftUtil.AutoVertSlideintegralSum += LiftUtil.vertSlidesError;
+                    output = (LiftUtil.AutoVertSlidesDownP * LiftUtil.AutoVertSlidesError) + (LiftUtil.AutoVertSlidesDownI * LiftUtil.AutoVertSlideintegralSum) + (LiftUtil.AutoVertSlidesDownD) + LiftUtil.AutoVertSlidesA;
+                    verticalSlides(-output);
+                    LiftUtil.AutoVertSlidesLastError = LiftUtil.AutoVertSlidesError;
+                    telemetry.addData("target",LiftUtil.downTarget);
                     telemetry.addData("error",LiftUtil.AutoVertSlidesError);
                     telemetry.addData("Output", output());
                     telemetry.addData("x",vals());
@@ -145,9 +186,46 @@ public class RedSpicemen extends LinearOpMode {
             }
         }
 
-        public Action slideUp() {return new VertSlide.slideUp();}
+        public class horizontalSlidesIN implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet){
+                time.reset();
+                while (time.seconds()< horizontalIterationTime ){
+                    horizontalSlides(.5);
+                }
+                leftThing.setPower(0);
+                rightThing.setPower(0);
+                return false;
+            }
+        }
 
-        public Action slideDown() {return new VertSlide.slideDown();}
+        public class horizontalSlidesOut implements Action{
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet){
+                time.reset();
+                while (time.seconds()< horizontalIterationTime ){
+                    horizontalSlides(-.5);
+                }
+                leftThing.setPower(0);
+                rightThing.setPower(0);
+                return false;
+            }
+        }
+
+
+
+
+
+        public Action slideUp() {return new vertSlideUp();}
+
+        public Action slideDown() {return new Slides.slideDown();}
+
+        public Action slideDownPID() {return new Slides.slideDownPID();}
+        public Action horizontalSlidesIN() {return new Slides.horizontalSlidesIN();}
+
+        public Action horizontalSlidesOut() {return new Slides.horizontalSlidesOut();}
+
+
     }
 
     public class Arm{
@@ -257,7 +335,7 @@ public class RedSpicemen extends LinearOpMode {
     @Override
     public void runOpMode() {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(8, -62.5, Math.toRadians(90)));
-        VertSlide slide = new VertSlide(hardwareMap);
+        Slides slide = new Slides(hardwareMap);
         Arm arm = new Arm(hardwareMap);
         Claw claw = new Claw(hardwareMap);
 
@@ -279,17 +357,11 @@ public class RedSpicemen extends LinearOpMode {
               .strafeTo(new Vector2d(24,-54))
               .setTangent(-Math.PI/2)
               .lineToY(-52)*/
-                .setTangent(Math.PI)
-                .lineToX(0)
-                .setTangent(Math.PI/2)
-                .lineToY(-30)
-                .stopAndAdd(arm.armPreScoring())
-                .waitSeconds(1)
-                .stopAndAdd(slide.slideUp())
-//                .stopAndAdd(arm.armPostScoring())
-                .waitSeconds(.5)
+                .afterDisp(5, slide.slideUp())
+                .splineTo(new Vector2d(0, tunerVAL1),Math.PI/2)
+                .stopAndAdd(arm.armPostScoring())
+                .waitSeconds(.3)
                 .stopAndAdd(claw.openClaw())
-                .waitSeconds(1)
                 .lineToY(-50)
                 .stopAndAdd(slide.slideDown())
                 .setTangent(Math.PI)
@@ -302,23 +374,51 @@ public class RedSpicemen extends LinearOpMode {
                 .splineTo(new Vector2d(56, -5),Math.PI/2)
                 .lineToY(-50)
                 .lineToY(-30)
-                .splineTo(new Vector2d(64,-5),Math.PI/2)
+                .splineTo(new Vector2d(66,-5),Math.PI/2)
                 .setTangent(Math.PI/2)
-                .lineToY(-58)
+                .lineToY(-50)
                 .stopAndAdd(arm.armPickUp())
-                .waitSeconds(1)
-                .lineToY(-60)
+                .strafeTo(new Vector2d(47,-62))
                 .stopAndAdd(claw.closeClaw())
                 .waitSeconds(1)
-                //untested cause slides died
                 .stopAndAdd(arm.armPreScoring())
-                .strafeTo(new Vector2d(0,-30))
+                .strafeTo(new Vector2d(3   ,-30))
+                .stopAndAdd(arm.counterclockwise())
                 .stopAndAdd(slide.slideUp())
-                .stopAndAdd(arm.armPostScoring())
-                .waitSeconds(.5)
-                .stopAndAdd(claw.openClaw())
                 .waitSeconds(1)
-;
+                .stopAndAdd(arm.armPostScoring())
+                .waitSeconds(1)
+                .stopAndAdd(arm.clockwise())
+                .stopAndAdd(claw.openClaw())
+                .stopAndAdd(slide.slideDown())
+                .stopAndAdd(arm.armPickUp());
+//                .strafeTo(new Vector2d(47,-62))
+//                .stopAndAdd(claw.closeClaw())
+//                .waitSeconds(1)
+//                .stopAndAdd(arm.counterclockwise())
+//                .strafeTo(new Vector2d(5   ,-30))
+//                .stopAndAdd(slide.slideUp())
+//                .waitSeconds(1)
+//                .stopAndAdd(arm.armPostScoring())
+//                .waitSeconds(1)
+//                .stopAndAdd(arm.clockwise())
+//                .stopAndAdd(claw.openClaw())
+//                .waitSeconds(1)
+//                .stopAndAdd(slide.slideDown())
+//                .stopAndAdd(arm.armPickUp())
+//                .strafeTo(new Vector2d(47,-62))
+//                .stopAndAdd(claw.closeClaw())
+//                .waitSeconds(1)
+//                .stopAndAdd(arm.counterclockwise())
+//                .strafeTo(new Vector2d(7 ,-30))
+//                .stopAndAdd(slide.slideUp())
+//                .waitSeconds(1)
+//                .stopAndAdd(arm.armPostScoring())
+//                .stopAndAdd(arm.clockwise())
+//                .stopAndAdd(claw.openClaw())
+//                .waitSeconds(1)
+//                .stopAndAdd(slide.slideDown())
+//                .stopAndAdd(arm.armPickUp());
         //grab spec
 //                .strafeTo(new Vector2d(65,-54))
 //                .waitSeconds(2)
@@ -357,6 +457,7 @@ public class RedSpicemen extends LinearOpMode {
 
         // actions that need to happen on init; for instance, a claw tightening.
         Actions.runBlocking(arm.armInit());
+        Actions.runBlocking(slide.horizontalSlidesIN());
         Actions.runBlocking(arm.counterclockwise());
         Actions.runBlocking(claw.openClaw());
         ElapsedTime time = new ElapsedTime();

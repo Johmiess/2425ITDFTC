@@ -11,8 +11,8 @@ public class  LiftUtil {
     public static double AutoVertSlidesError = 0;
 
 
-    public static double target = 12200;
-    public static double downTarget = 700;
+    public static double target = 12400  ;
+    public static double downTarget = 0;
 
 // vslide
     public static double vertSlideintegralSum = 0;
@@ -56,9 +56,10 @@ public class  LiftUtil {
 
     public static double AutoVertSlidesUpD = 0;
 
-    public static double AutoVertSlidesDownP = 0;
+    public static double AutoVertSlidesDownP = 0.000192;
     public static double AutoVertSlidesDownI = 0.0000005;
 
+    public static double AutoVertSlidesDownD = 0;
 
 
 

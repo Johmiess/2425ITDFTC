@@ -248,7 +248,7 @@ public class  robot {
         rightThing.setPower(speed);
     }
 
-    public void verticalSlides(double speed){
+    public void verticalSlides(double   speed){
         leftThing.setPower(speed);
         rightThing.setPower(speed);
     }
