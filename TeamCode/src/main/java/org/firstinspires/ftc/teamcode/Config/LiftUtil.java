@@ -11,7 +11,8 @@ public class  LiftUtil {
     public static double AutoVertSlidesError = 0;
 
 
-    public static double target = 12400  ;
+    public static double target = 12200
+            ;
     public static double downTarget = 0;
 
 // vslide

@@ -155,7 +155,7 @@ public class RedSpicemen extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
                 ElapsedTime timer = new ElapsedTime();
-                while (timer.seconds() < 4) {
+                while (timer.seconds() < 2) {
                     double currentPos = (leftThing.getCurrentPosition());
                     LiftUtil.AutoVertSlidesError = LiftUtil.downTarget - currentPos;
                     LiftUtil.AutoVertSlideintegralSum += LiftUtil.vertSlidesError;
@@ -374,15 +374,18 @@ public class RedSpicemen extends LinearOpMode {
 
 
         TrajectoryActionBuilder traj3 = drive.actionBuilder(new Pose2d(47, -62, Math.PI/2))
-                .strafeTo(new Vector2d(3,-29));
+                .strafeTo(new Vector2d(3,-25));
 
-        TrajectoryActionBuilder traj4 = drive.actionBuilder(new Pose2d(3,-30,Math.PI/2))
+        TrajectoryActionBuilder traj4 = drive.actionBuilder(new Pose2d(3,-25,Math.PI/2))
                 .stopAndAdd(arm.armPostScoring())
                 .waitSeconds(1)
                 .stopAndAdd(claw.openClaw())
-                .lineToY(-50)
+                .lineToY(-60)
                 .stopAndAdd(slide.slideDown())
-                .stopAndAdd(arm.armPickUp());
+                .stopAndAdd(arm.clockwise())
+                .stopAndAdd(arm.armPickUp())
+                .setTangent(Math.PI)
+                .lineToX(47);
 
 
 
