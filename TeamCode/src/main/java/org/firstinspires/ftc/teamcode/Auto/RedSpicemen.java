@@ -176,8 +176,8 @@ public class RedSpicemen extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
                 time.reset();
-                while (time.seconds()< iterationTime && leftThing.getCurrentPosition()>=200){
-                   verticalSlides(1);
+                while (time.seconds()< iterationTime && leftThing.getCurrentPosition()>=700){
+                   verticalSlides(.75);
                 }
                 leftThing.setPower(0);
                 rightThing.setPower(0);
